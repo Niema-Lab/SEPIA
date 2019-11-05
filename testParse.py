@@ -1,3 +1,4 @@
+from collections import OrderedDict
 # Open this file. specify a file from user args
 f = open("01.practiceTransmission.txt", "r")
 
@@ -19,5 +20,7 @@ for line in f.readlines():
     if u not in num_infected:
         num_infected[u] = 0
     num_infected[u] += 1
-    print num_infected[u]
+    
 
+num_infected = OrderedDict(sorted(num_infected.items(), key=lambda x: x[1]))
+print(num_infected)
