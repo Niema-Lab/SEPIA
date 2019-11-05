@@ -12,11 +12,12 @@ for line in f.readlines():
     u = u.strip()
     v = v.strip()
     lower_bound = 0
-    upper_bound = 9
+    upper_bound = 5
 
-    # why does this not work?
-    #if lower_bound <= float(t) <= upper_bound:
-  
+    # Only considers infections within a given range of years
+    if (lower_bound > float(t)) | (float(t) > upper_bound):
+        continue
+
     if u not in num_infected:
         num_infected[u] = 0
     num_infected[u] += 1
