@@ -22,6 +22,10 @@ for line in f.readlines():
         num_infected[u] = 0
     num_infected[u] += 1
     
+# Print the output of all individuals, unsorted
+
+
+
 # Sort the dictionary
 num_infected = OrderedDict(sorted(num_infected.items(), key=lambda x: x[1]))
 
