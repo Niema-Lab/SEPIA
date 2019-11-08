@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from collections import OrderedDict
 # Open this file. specify a file from user args
 f = open("01.transmissions.txt", "r")

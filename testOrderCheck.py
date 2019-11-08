@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from orderCheck import *
 
 infectionsDict = countInfections("01.transmissions.txt", 0, 5)

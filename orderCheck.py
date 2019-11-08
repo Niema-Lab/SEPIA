@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from collections import OrderedDict
 import scipy
 import scipy.stats as stats # run 'pip install scipy' in your terminal
