@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 File implements a script where the user can calculate the Kendall Tau B correlation coefficient 
 between their ordering and most optimal ordering, assuming that the counts of individuals in 

@@ -1,14 +1,13 @@
-<<<<<<< HEAD
+#!/usr/bin/env python3
 """
 File implements several methods used in compute_efficiency.py and compute_taub.py
 """
 
 
 from sys import stderr
-=======
-#!/usr/bin/env python3
+
+
 from collections import OrderedDict
->>>>>>> 553db54767aa061cd799dc8c549efda6b131c47e
 import scipy
 import scipy.stats as stats # run 'pip install scipy' in your terminal
 

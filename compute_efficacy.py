@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 File implements a script where the user can match their own prioritization ordering of 
 individuals with their actual infection counts based on tranmission history data. 
