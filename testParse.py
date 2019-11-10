@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from collections import OrderedDict
 # Open this file. specify a file from user args
 f = open("01.transmissions.txt", "r")
@@ -22,10 +23,6 @@ for line in f.readlines():
         num_infected[u] = 0
     num_infected[u] += 1
     
-# Print the output of all individuals, unsorted
-
-
-
 # Sort the dictionary
 num_infected = OrderedDict(sorted(num_infected.items(), key=lambda x: x[1]))
 
