@@ -5,9 +5,6 @@ File implements several methods used in compute_efficiency.py and compute_taub.p
 
 
 from sys import stderr
-
-
-from collections import OrderedDict
 import scipy
 import scipy.stats as stats # run 'pip install scipy' in your terminal
 
