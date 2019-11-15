@@ -21,11 +21,15 @@ if __name__ == "__main__":
 
     # handle input and and output, save into infile and outfile vars
     if args.input == 'stdin':
-        from sys import stdin; infile = stdin
+        from sys import stdin; efficacy = [[v.strip() for v in l.strip().split('\t')] for l in stdin.read().strip().splitlines()]
     elif args.input.lower().endswith('.gz'):
-        from gzip import open as gopen; infile = gopen(args.input)
+        from gzip import open as gopen; efficacy = [[v.strip() for v in l.strip().split('\t')] for l in gopen(args.input).read().decode().strip().splitlines()]
     else:
-        infile = open(args.input)
+        efficacy = [[v.strip() for v in l.strip().split('\t')] for l in open(args.input).read().strip().splitlines()]
+    for i in range(len(efficacy)):
+        if len(efficacy[i]) != 2:
+            raise ValueError("Input must be efficacy file (TSV with 2 columns: PERSON<TAB>EFFICACY")
+        efficacy[i] = (float(efficacy[i][1]), efficacy[i][0])
     if args.output == 'stdout':
         from sys import stdout; outfile = stdout
     else:
@@ -36,8 +40,7 @@ if __name__ == "__main__":
     if args.reverse:
         descendingSort = False
     
-    calculateTauB(infile, outfile, descendingSort)
-
-    infile.close(); outfile.close()
+    calculateTauB(efficacy, outfile, descendingSort)
+    outfile.close()
 
 

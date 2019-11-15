@@ -88,7 +88,7 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
                         outfile.write("%s\t%d\n" % (p, infectionsDict[p]))
 
 
-def calculateTauB(infile, outfile, reverse: bool) -> None:
+def calculateTauB(userOrder, outfile, reverse: bool) -> None:
         """
         Calculates the Kendall Tau B correlation coefficient between user ordering
         and most optimal ordering, assuming that the counts of individuals in 
@@ -104,20 +104,9 @@ def calculateTauB(infile, outfile, reverse: bool) -> None:
         reverse - bool, true if user's ordering is compared to order sorted descending,
                                         false if comparing to order sorted ascending
         """
-
-        userOrder = []
-
-        for line in infile:
-                p,count = line.split('\t')
-                p = p.strip()
-                count = count.strip()
-                userOrder.append(int(count))
-
         optimalOrder = sorted(userOrder, reverse=reverse)
-        print(userOrder, "\n")
-        print(optimalOrder)
+        #print(userOrder, "\n")
+        tau, pvalue = stats.kendalltau([e[0] for e in optimalOrder], [e[0] for e in userOrder])
 
-        tau, pvalue = stats.kendalltau(optimalOrder, userOrder)
-
-        outfile.write("%d\t%d\n" % (tau, pvalue))
+        outfile.write("%s\t%s\n" % (tau, pvalue))
 
