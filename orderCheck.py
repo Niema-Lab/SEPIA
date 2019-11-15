@@ -82,7 +82,7 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
                 p = line.strip()
 
                 if p not in infectionsDict.keys():
-                        print("Individual", line, "is not in the transmission histories file.", stderr)
+                        outfile.write("%s\t0\n" % p)
 
                 else:
                         outfile.write("%s\t%d\n" % (p, infectionsDict[p]))

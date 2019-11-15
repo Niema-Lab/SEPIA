@@ -37,5 +37,4 @@ if __name__ == "__main__":
 
     # Read the user's ordering and print a file with individuals and their counts in the same order
     matchInfectorCounts(infectionsDict, order, outfile)
-
-    infile.close(); outfile.close()
+    outfile.close()
