@@ -30,7 +30,7 @@ def countInfections(transmissionHist, lowerBound: int, upperBound: int) -> dict:
             if transmissionHist.lower().endswith('.gz'):
                 lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]
             else:
-                lines = [l.strip() for l in open(transmissionHist).read().decode().strip().splitlines()]
+                lines = [l.strip() for l in open(transmissionHist).read().strip().splitlines()]
         else:
             lines = [l.strip() for l in transmissionHist.read().strip().splitlines()]
 
