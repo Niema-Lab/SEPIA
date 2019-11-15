@@ -22,20 +22,20 @@ if __name__ == "__main__":
 
     # handle input and and output, save into infile and outfile vars
     if args.input == 'stdin':
-        from sys import stdin; infile = stdin
+        from sys import stdin; order = [l.strip() for l in stdin]
     elif args.input.lower().endswith('.gz'):
-        from gzip import open as gopen; infile = gopen(args.input)
+        from gzip import open as gopen; order = [l.strip() for l in gopen(args.input).read().decode().strip().splitlines()]
     else:
-        infile = open(args.input)
+        order = [l.strip() for l in open(args.input).read().strip().splitlines()]
     if args.output == 'stdout':
         from sys import stdout; outfile = stdout
     else:
         outfile = open(args.output,'w')
 
     # Create a dictionary matching individuals to infection counts using tranmission history data
-    infectionsDict = countInfections(open(args.tranmsissionHist, "r"), args.start, args.end)
+    infectionsDict = countInfections(args.tranmsissionHist, args.start, args.end)
 
     # Read the user's ordering and print a file with individuals and their counts in the same order
-    matchInfectorCounts(infectionsDict, infile, outfile)
+    matchInfectorCounts(infectionsDict, order, outfile)
 
     infile.close(); outfile.close()
