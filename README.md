@@ -21,7 +21,8 @@ usage: [-h] [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
   -s START
                         Start time
   -e END
-                        End time (default: infinity)
+                        End time 
+                        (default: infinity)
 ```
 
 - ___compute_taub.py___ - computes the Kendall Tau-b correlation coefficient between the user's ordering and the optimal ordering (which is sorted in descending order).
