@@ -8,13 +8,16 @@ A tool to evaluate the accuracy of a list that prioritizes infectors from greate
 
 ```
 usage: [-h] [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
-  -h, --help            show this help message and exit
+  -h, --help            Show the help message and exit
   -i INPUT, --input INPUT
-                        Input File (User ordering of individuals), (default: stdin)
+                        Input File (User ordering of individuals)
+                        (default: stdin)
   -o OUTPUT, --output OUTPUT
-                        Output File (User ordering of individuals paired with their counts), (default: stdout)
+                        Output File (User ordering of individuals paired with their counts)
+                        (default: stdout)
   -t TRANSMISSIONHIST
-                        Transmission History File (Logs every infection between every pair of individuals)            
+                        Transmission History File 
+                        (Logs every infection between every pair of individuals)            
   -s START
                         Start time
   -e END
@@ -24,15 +27,18 @@ usage: [-h] [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
 - ___compute_taub.py___ - computes the Kendall Tau-b correlation coefficient between the user's ordering and the optimal ordering (which is sorted in descending order).
 
 ```
-[-h] [-i INPUT] [-o OUTPUT] [-r]
-  -h, --help            show this help message and exit
+usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
+  -h, --help            Show the help message and exit
   -i INPUT, --input INPUT
-                        Input File (User ordering of individuals paired with their counts), (default: stdin)
+                        Input File (User ordering of individuals paired with their counts) 
+                        (default: stdin)
   -o OUTPUT, --output OUTPUT
-                        Output File (Tau-b correlation coefficient, along with calculated p-value), (default: stdout)
+                        Output File (Tau-b correlation coefficient, along with calculated p-value)
+                        (default: stdout)
 
   -r 
-                        Reverses the optimal ordering if flag set. (Optimal ordering is sorted in ascending order).
+                        Reverses the optimal ordering if flag set. (Optimal ordering is sorted in 
+                        ascending order).
 ```
 
 - _orderCheck.py_ defines several functions for used in the scripts above.
