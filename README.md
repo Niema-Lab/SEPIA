@@ -2,7 +2,7 @@
 
 A tool to evaluate the accuracy of a list that prioritizes infectors from greatest to least.
 
-### Current important files
+### Important files
 
 - ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. The user's ordering is maintained.
 
