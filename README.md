@@ -6,7 +6,7 @@ A tool to evaluate the accuracy of a list that prioritizes infectors from greate
 
 - ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. The user's ordering is maintained.
 
-'''
+```
 usage: [-h] [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
   -h, --help            show this help message and exit
   -i INPUT, --input INPUT
@@ -19,11 +19,11 @@ usage: [-h] [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
                         Start time
   -e END
                         End time (default: infinity)
-'''
+```
 
 - ___compute_taub.py___ - computes the Kendall Tau-b correlation coefficient between the user's ordering and the optimal ordering (which is sorted in descending order).
 
-'''
+```
 [-h] [-i INPUT] [-o OUTPUT] [-r]
   -h, --help            show this help message and exit
   -i INPUT, --input INPUT
@@ -33,6 +33,6 @@ usage: [-h] [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
 
   -r 
                         Reverses the optimal ordering if flag set. (Optimal ordering is sorted in ascending order).
-'''
+```
 
 - _orderCheck.py_ defines several functions for used in the scripts above.
