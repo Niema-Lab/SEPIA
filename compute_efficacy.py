@@ -9,9 +9,10 @@ from orderCheck import countInfections, matchInfectorCounts
 
 
 if __name__ == "__main__":
-    # parse user arguments [-h] [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
+    # parse user arguments [-h] -m METRIC [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
     import argparse
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-m', '--metric', required=True, type=int, help="Metric of prioritization")
     parser.add_argument('-i', '--input', required=False, type=str, default='stdin', help="Input File - User's Ordering")
     parser.add_argument('-o', '--output', required=False, type=str, default='stdout', help="Output File")
     parser.add_argument('-t', '--tranmsissionHist', required=True, type=str, help='Tranmission History File')
@@ -33,7 +34,7 @@ if __name__ == "__main__":
         outfile = open(args.output,'w')
 
     # Create a dictionary matching individuals to infection counts using tranmission history data
-    infectionsDict = countInfections(args.tranmsissionHist, args.start, args.end)
+    infectionsDict = pairCounts(args.tranmsissionHist, args.start, args.end, args.metric)
 
     # Read the user's ordering and print a file with individuals and their counts in the same order
     matchInfectorCounts(infectionsDict, order, outfile)
