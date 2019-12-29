@@ -1,0 +1,12 @@
+PA	4
+PC	0
+PB	0
+PD	1
+PE	3
+PF	0
+PG	0
+PI	0
+PH	0
+PR	0
+PS	0
+PT	0

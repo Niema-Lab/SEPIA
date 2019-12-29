@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-File implements a script where the user can calculate the Kendall Tau B correlation coefficient 
-between their ordering and most optimal ordering, assuming that the counts of individuals in 
-inputted file sorted is the most optimal. 
+File implements a script where the user can calculate the Kendall Tau B correlation coefficient
+between their ordering and most optimal ordering, assuming that the counts of individuals in
+inputted file sorted is the most optimal.
 """
 
 
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # user wants to compare their ordering theirs sorted in ascending order
     if args.reverse:
         descendingSort = False
-    
+
     calculateTauB(efficacy, outfile, descendingSort)
     outfile.close()
 

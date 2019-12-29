@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-File implements a script where the user can match their own prioritization ordering of 
-individuals with their actual infection counts based on tranmission history data. 
+File implements a script where the user can match their own prioritization ordering of
+individuals with their actual infection counts based on tranmission history data.
 """
 
-
-from orderCheck import countInfections, matchInfectorCounts
+# I commented out countInfections because it was causing me compiler errors
+from orderCheck import *
+#countInfections, matchInfectorCounts
+#from orderCheck import matchInfectorCounts
 
 
 if __name__ == "__main__":
@@ -16,7 +18,7 @@ if __name__ == "__main__":
     parser.add_argument('-i', '--input', required=False, type=str, default='stdin', help="Input File - User's Ordering")
     parser.add_argument('-o', '--output', required=False, type=str, default='stdout', help="Output File")
     parser.add_argument('-t', '--tranmsissionHist', required=True, type=str, help='Tranmission History File')
-    parser.add_argument('-s', '--start', required=True, type=float, help='Time Start')  
+    parser.add_argument('-s', '--start', required=True, type=float, help='Time Start')
     parser.add_argument('-e', '--end', required=False, type=float, default=float('inf'), help='Time End') # end defaults to infinity
 
     args = parser.parse_args()

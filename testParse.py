@@ -22,7 +22,7 @@ for line in f.readlines():
     if u not in num_infected:
         num_infected[u] = 0
     num_infected[u] += 1
-    
+
 # Sort the dictionary
 num_infected = OrderedDict(sorted(num_infected.items(), key=lambda x: x[1]))
 
@@ -36,7 +36,7 @@ for infected in infected_list:
     # Take only the top 10 elements
     if i == 11:
         break
-    
+
     # Removes the value of none
     if infected_list[len(infected_list) - 1 - i][0] == 'None':
         i = i + 1
@@ -45,7 +45,7 @@ for infected in infected_list:
     # Add the top infected to the dictionary
     top_num_infected[i] = infected_list[len(infected_list) - 1 - i]
     i = i + 1
-   
+
 
 # Print the dictionary
 print(top_num_infected)

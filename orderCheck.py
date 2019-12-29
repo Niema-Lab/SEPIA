@@ -16,16 +16,16 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
 
         There are currently four metrics to choose from:
         Metric 1 - TODO , short summaries of each metric
-        Metric 2 - 
-        Metric 3 - 
-        Metric 4 - 
-        
+        Metric 2 -
+        Metric 3 -
+        Metric 4 -
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding count.
 
         Parameters
         ----------
-        tranmissionHist - the file object with data on tranmissions used to build the 
+        tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
         lowerBound - lower bound of years range
         upperBound - upper bound of years range
@@ -43,22 +43,22 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
             return totalTransmissions(transmissionHist, lowerBound, upperBound)
 
 
-    
+
 def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
-        Counts the number of times each individual infected someone else in a file.     
-        
+        Counts the number of times each individual infected someone else in a file.
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding infection count.
 
         Parameters
         ----------
-        tranmissionHist - the file object with data on tranmissions used to build the 
+        tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
         lowerBound - lower bound of years range
         upperBound - upper bound of years range
         """
-        
+
         infectedPersons= []
         people = []
         numInfected = dict()
@@ -87,7 +87,7 @@ def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> d
                 numInfected[u] = 0
 
             numInfected[u] += 1
-            
+
         """
         # Print the output of all individuals, unsorted
         for u in numInfected:
@@ -99,19 +99,19 @@ def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> d
 
 def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
-        TODO metric 2 - Titan  
-        
+        TODO metric 2 - Titan
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
 
         Parameters
         ----------
-        tranmissionHist - the file object with data on tranmissions used to build the 
+        tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
         lowerBound - lower bound of years range
         upperBound - upper bound of years range
         """
-        
+
         infectedPersons= []
         people = []
         numInfected = dict()
@@ -146,19 +146,19 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
 
 def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
-        TODO metric 3 - Mckenna   
-        
+        TODO metric 3 - Mckenna
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
 
         Parameters
         ----------
-        tranmissionHist - the file object with data on tranmissions used to build the 
+        tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
         lowerBound - lower bound of years range
         upperBound - upper bound of years range
         """
-        
+
         infectedPersons= []
         people = []
         numInfected = dict()
@@ -188,24 +188,50 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
 
             numInfected[u] += 1
 
-        return numInfected
+
+        numIndirect = dict()
+        for line in lines:
+            u,v,t = line.split('\t')
+            u = u.strip()
+            v = v.strip()
+
+            # Only considers infections within a given range of years
+            if (lowerBound > float(t)) | (float(t) > upperBound):
+                continue
+
+            if u == 'None':
+                continue
+
+            if u not in numIndirect:
+                numIndirect[u] = 0
+
+            # should get the number of people that were indirected impacted
+            if v in numInfected:
+                numIndirect[u] += numInfected.get(v)
+
+
+#        for u in numIndirect:
+ #           print("%s\t%d" % (u, numIndirect[u]))
+
+        return numIndirect
+
 
 
 def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
-        TODO metric 4 - Tyler/Kim, after Mckenna is done with metric 3   
-        
+        TODO metric 4 - Tyler/Kim, after Mckenna is done with metric 3
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
 
         Parameters
         ----------
-        tranmissionHist - the file object with data on tranmissions used to build the 
+        tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
         lowerBound - lower bound of years range
         upperBound - upper bound of years range
         """
-        
+
         infectedPersons= []
         people = []
         numInfected = dict()
@@ -243,7 +269,7 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
         Matches the infectors in a user inputted file to their corresponding
         infection count. Returns void.
 
-        Outputs lines with the format: "<individual> <count>", 
+        Outputs lines with the format: "<individual> <count>",
         maintaing the original order of individuals in input.
 
         Parameters
@@ -268,14 +294,14 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
 def calculateTauB(userOrder, outfile, reverse: bool) -> None:
         """
         Calculates the Kendall Tau B correlation coefficient between user ordering
-        and most optimal ordering, assuming that the counts of individuals in 
-        infile sorted is the most optimal. 
+        and most optimal ordering, assuming that the counts of individuals in
+        infile sorted is the most optimal.
         Outputs coefficient and pvalue in the following format: "<tau> <pvalue>".
         Returns void.
 
         Parameters
         ----------
-        infile- a file containing an ordering of infectors and their counts - 
+        infile- a file containing an ordering of infectors and their counts -
                         generated by the user's algorithm
         outfile - the file the tau and pvalue are outputted
         reverse - bool, true if user's ordering is compared to order sorted descending,
