@@ -7,7 +7,7 @@ A tool to evaluate the accuracy of a list that prioritizes infectors from greate
 - ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. The user's ordering is maintained.
 
 ```
-usage: [-h] [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
+usage: [-h] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-s START] [-e END]
   -h, --help            Show the help message and exit
   -i INPUT, --input INPUT
                         Input File (User ordering of individuals)
