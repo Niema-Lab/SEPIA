@@ -261,7 +261,41 @@ def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> di
 
             numInfected[u] += 1
 
-        return numInfected
+
+        numIndirect = dict()
+        for line in lines:
+            u,v,t = line.split('\t')
+            u = u.strip()
+            v = v.strip()
+
+            # Only considers infections within a given range of years
+            if (lowerBound > float(t)) | (float(t) > upperBound):
+                continue
+
+            if u == 'None':
+                continue
+
+            if u not in numIndirect:
+                numIndirect[u] = 0
+
+            # should get the number of people that were indirected impacted
+            if v in numInfected:
+                numIndirect[u] += numInfected.get(v)
+
+        numTotal = dict()
+
+        # go through loop
+        for person in numInfected:
+
+            if person not in numTotal:
+                numTotal[person] = 0
+
+            if person in numInfected:
+                numTotal[person] += numInfected[person]
+            if person in numIndirect:
+                numIndirect[person]
+
+        return numTotal
 
 
 def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
