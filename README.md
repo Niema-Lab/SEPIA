@@ -1,14 +1,16 @@
 # erspMeasure
 
-A tool to evaluate the accuracy of a list that prioritizes infectors from greatest to least.
+A tool to evaluate the accuracy of a list that prioritizes individuals with HIV from greatest to least based on their likelihood to spread HIV.
 
 ### Important files
 
 - ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. The user's ordering is maintained.
 
 ```
-usage: [-h] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-s START] [-e END]
+usage: [-h] -m METRIC [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
   -h, --help            Show the help message and exit
+  -m METRIC             Prioritize individuals based on the chosen metric (denoted by integers 1-4).
+                        Each integer represents a different metric, described in the wiki.
   -i INPUT, --input INPUT
                         Input File (User ordering of individuals)
                         (default: stdin)
