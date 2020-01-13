@@ -5,7 +5,6 @@ between their ordering and most optimal ordering, assuming that the counts of in
 inputted file sorted is the most optimal.
 """
 
-
 from orderCheck import calculateTauB
 
 

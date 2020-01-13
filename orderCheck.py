@@ -15,8 +15,8 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
         on the corresponding chosen metric.
 
         There are currently four metrics to choose from:
-        Metric 1 - TODO , short summaries of each metric
-        Metric 2 -
+        Metric 1 - 
+        Metric 2 - 
         Metric 3 -
         Metric 4 -
 
@@ -41,7 +41,6 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
             return indirectTransmissions(transmissionHist, lowerBound, upperBound)
         elif (metric == 4):
             return totalTransmissions(transmissionHist, lowerBound, upperBound)
-
 
 
 def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
@@ -146,8 +145,6 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
 
 def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
-        TODO metric 3 - Mckenna
-
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
 
@@ -188,7 +185,6 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
 
             numInfected[u] += 1
 
-
         numIndirect = dict()
         for line in lines:
             u,v,t = line.split('\t')
@@ -209,18 +205,11 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
             if v in numInfected:
                 numIndirect[u] += numInfected.get(v)
 
-
-#        for u in numIndirect:
- #           print("%s\t%d" % (u, numIndirect[u]))
-
         return numIndirect
-
 
 
 def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
-        TODO metric 4 - Tyler/Kim, after Mckenna is done with metric 3
-
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
 
