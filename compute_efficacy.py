@@ -4,10 +4,7 @@ File implements a script where the user can match their own prioritization order
 individuals with their actual infection counts based on tranmission history data.
 """
 
-# I commented out countInfections because it was causing me compiler errors
 from orderCheck import *
-#countInfections, matchInfectorCounts
-#from orderCheck import matchInfectorCounts
 
 
 if __name__ == "__main__":
