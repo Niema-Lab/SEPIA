@@ -19,6 +19,7 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
         Metric 2 - 
         Metric 3 -
         Metric 4 -
+        Metric 5 -
 
         Returns a dictionary where each key is an individual and their value
         is their corresponding count.
@@ -41,6 +42,8 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
             return indirectTransmissions(transmissionHist, lowerBound, upperBound)
         elif (metric == 4):
             return totalTransmissions(transmissionHist, lowerBound, upperBound)
+        elif (metric == 5):
+            return numContacts(transmissionHist, lowerBound, upperBound)
 
 
 def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
@@ -286,6 +289,51 @@ def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> di
 
         return numTotal
 
+def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict: 
+        """
+        Counts the number of connections an individual has.
+
+        Returns a dictionary where each key is an individual and their value
+        is their corresponding number of contacts in the file.
+
+        Parameters
+        ----------
+        transmissionHist - the file object with data on transmissions used to
+        build the dictionary.
+        lowerBound - lower bound of years range
+        upperBound - upper bound of years range
+        """
+
+        infectedPersons= []
+        people = []
+        numberContacts = dict()
+        if isinstance(transmissionHist,str):
+            if transmissionHist.lower().endswith('.gz'):
+                lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]
+            else:
+                lines = [l.strip() for l in open(transmissionHist).read().strip().splitlines()]
+        else:
+            lines = [l.strip() for l in transmissionHist.read().strip().splitlines()]
+
+        # Loop over each line in the file.
+        for line in lines:
+            u,v,t = line.split('\t')
+            u = u.strip()
+            v = v.strip()
+
+            # Only considers infections within a given range of years
+            if (lowerBound > float(t)) | (float(t) > upperBound):
+                continue
+
+            if u == 'None':
+                continue
+
+            if u not in numberContacts:
+                numberContacts[u] = 0
+
+            numberContacts[u] += 1
+
+        return numberContacts
 
 def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
         """
