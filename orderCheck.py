@@ -300,8 +300,8 @@ def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         ----------
         transmissionHist - the file object with data on transmissions used to
         build the dictionary.
-        lowerBound - lower bound of years range
-        upperBound - upper bound of years range
+        lowerBound - Ignored for contact networks
+        upperBound - Ignored for contact networks
         """
 
         infectedPersons= []
@@ -317,22 +317,22 @@ def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict:
 
         # Loop over each line in the file.
         for line in lines:
-            u,v,t = line.split('\t')
+            # Skip over lines listing the nodes
+            if(line[0:4] == 'NODE'):
+                    continue
+
+            u,v,t,w,x = line.split('\t')
             u = u.strip()
             v = v.strip()
-
-            # Only considers infections within a given range of years
-            if (lowerBound > float(t)) | (float(t) > upperBound):
-                continue
-
+            
             if u == 'None':
                 continue
+            
+            if v not in numberContacts:
+                numberContacts[v] = 0
 
-            if u not in numberContacts:
-                numberContacts[u] = 0
-
-            numberContacts[u] += 1
-
+            numberContacts[v] += 1
+        
         return numberContacts
 
 def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
