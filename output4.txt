@@ -1,12 +1,12 @@
 PA	4
 PC	0
-PB	0
+PB	1
 PD	1
-PE	3
+PE	2
 PF	0
-PG	0
+PG	3
 PI	0
-PH	0
+PH	1
 PR	0
 PS	0
 PT	0
