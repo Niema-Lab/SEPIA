@@ -14,7 +14,7 @@ from itertools import repeat
 
 # CONSTANTS
 NUM_POINTS_PER_STEP = 10
-METRIC1 = 1; METRIC2 = 2; METRIC3 = 3; METRIC4 = 4
+METRIC1 = 1; METRIC2 = 2; METRIC3 = 3; METRIC4 = 4; METRIC5 = 5;
 TAB_CHAR = '\t'
 
 
@@ -24,7 +24,15 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
         that an individual has a higher priority. Count values are calculated based
         on the corresponding chosen metric.
 
-        There are currently four metrics to choose from.
+        There are currently four metrics to choose from:
+        Metric 1 - Finds the number of direct transmissions from one individual to another
+        Metric 2 - 
+        Metric 3 - Finds the number of indirect transmissions from the individuals HIV was 
+        transmitted to from a given individual.
+        Metric 4 - Totals the numbers from metric 1 and metric 3 for each individual.
+        Metric 5 - Finds the number of contacts for each individual in the contact number.
+
+        There are currently five metrics to choose from.
 
         Returns a dictionary where each key is an individual and their value
         is their corresponding count.
@@ -47,6 +55,8 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
             return indirectTransmissions(transmissionHist, lowerBound, upperBound)
         elif (metric == METRIC4):
             return totalTransmissions(transmissionHist, lowerBound, upperBound)
+        elif (metric == METRIC5):
+            return numContacts(transmissionHist, lowerBound, upperBound)
 
 
 def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
@@ -323,6 +333,50 @@ def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> di
 
         return numTotal
 
+def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict: 
+        """
+        Counts the number of contacts an individual has.
+
+        Returns a dictionary where each key is an individual and their value
+        is their corresponding number of contacts in the file.
+
+        Parameters
+        ----------
+        transmissionHist - the file object with data on transmissions used to
+        build the dictionary.
+        lowerBound - Ignored for contact networks
+        upperBound - Ignored for contact networks
+        """
+
+        infectedPersons= []; people = []
+        numberContacts = dict()
+        lines = opengzip(transmissionHist)
+
+        # Loop over each line in the file.
+        for line in lines:
+            # Skip over lines listing the nodes
+            if(line[0:4] == 'NODE'):
+                    continue
+
+            u,v,t,w,x = line.split('\t')
+            u = u.strip()
+            v = v.strip()
+            
+            if u == 'None':
+                continue
+           
+            # Add person to numberContacts if they don't already exist in the dict
+            if v not in numberContacts:
+                numberContacts[v] = 0
+            
+            if t not in numberContacts:
+                numberContacts[t] = 0
+            
+            # Increment their number of contacts
+            numberContacts[v] += 1
+            numberContacts[t] += 1
+
+        return numberContacts
 
 def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
         """
