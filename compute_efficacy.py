@@ -4,7 +4,7 @@ File implements a script where the user can match their own prioritization order
 individuals with their actual infection counts based on tranmission history data.
 """
 
-from orderCheck import *
+from efficacyFunctions import *
 
 
 if __name__ == "__main__":
