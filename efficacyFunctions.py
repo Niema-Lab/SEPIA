@@ -41,6 +41,7 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
         ----------
         tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
+                          NOTE: metric 5 requires a contact network file instead
         lowerBound - lower bound of time range
         upperBound - upper bound of timerange
         metric - int, specifies the chosen metric
@@ -197,10 +198,10 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
             slopesDict[u] = linregress.slope
 
             # TESTING - Plot the points and the best fit
-            # if (u == 'CNG0-COM1-4332'):
-                # plt.plot(x, y, 'o')
-                # plt.plot(x, float(linregress.intercept) + linregress.slope*x, 'r')
-                # plt.show()
+            # if (u == 'CNG0-COM3-502'):
+            #     plt.plot(x, y, 'o')
+            #     plt.plot(x, float(linregress.intercept) + linregress.slope*x, 'r')
+            #     plt.show()
 
         return slopesDict
 
@@ -378,7 +379,7 @@ def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict:
 
         return numberContacts
 
-def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
+def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) -> None:
         """
         Matches the infectors in a user inputted file to their corresponding
         infection count. Returns void.
@@ -402,7 +403,10 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
                         outfile.write("%s\t0\n" % p)
 
                 else:
-                        outfile.write("%s\t%f\n" % (p, infectionsDict[p]))
+                        if metric == METRIC2:
+                            outfile.write("%s\t%f\n" % (p, infectionsDict[p]))
+                        else:
+                            outfile.write("%s\t%d\n" % (p, infectionsDict[p]))
 
 
 def opengzip(transmissionHist):
@@ -414,6 +418,7 @@ def opengzip(transmissionHist):
         transmissionHist - the gzip to open. the file object with data on 
                            tranmissions.
         """
+
         if isinstance(transmissionHist,str):
             if transmissionHist.lower().endswith('.gz'):
                 lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]

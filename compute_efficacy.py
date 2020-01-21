@@ -36,5 +36,5 @@ if __name__ == "__main__":
     infectionsDict = pairCounts(args.tranmsissionHist, args.start, args.end, args.metric)
 
     # Read the user's ordering and print a file with individuals and their counts in the same order
-    matchInfectorCounts(infectionsDict, order, outfile)
+    matchInfectorCounts(infectionsDict, order, outfile, args.metric)
     outfile.close()
