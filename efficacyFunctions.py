@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
 """
-File implements several methods used in compute_efficiency.py and compute_taub.py
+File implements several methods used in compute_efficiency.py.
 """
+
+# EXTERNAL MODULES
 from gzip import open as gopen
 from sys import stderr
-import scipy
+import numpy as np
 import scipy.stats as stats # run 'pip install scipy' in your terminal
+import scipy
+import matplotlib.pyplot as plt
+from itertools import repeat
+
+# CONSTANTS
+NUM_POINTS_PER_STEP = 10
+METRIC1 = 1; METRIC2 = 2; METRIC3 = 3; METRIC4 = 4; METRIC5 = 5;
+TAB_CHAR = '\t'
 
 
 def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) -> dict:
@@ -22,6 +32,8 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
         Metric 4 - Totals the numbers from metric 1 and metric 3 for each individual.
         Metric 5 - Finds the number of contacts for each individual in the contact number.
 
+        There are currently five metrics to choose from.
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding count.
 
@@ -29,21 +41,21 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
         ----------
         tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
-        lowerBound - lower bound of years range
-        upperBound - upper bound of years range
+        lowerBound - lower bound of time range
+        upperBound - upper bound of timerange
         metric - int, specifies the chosen metric
         """
 
         # call the function corresponding to the chosen metric
-        if (metric == 1):
+        if (metric == METRIC1):
             return directTransmissions(transmissionHist, lowerBound, upperBound)
-        elif (metric == 2):
+        elif (metric == METRIC2):
             return bestfitGraph(transmissionHist, lowerBound, upperBound)
-        elif (metric == 3):
+        elif (metric == METRIC3):
             return indirectTransmissions(transmissionHist, lowerBound, upperBound)
-        elif (metric == 4):
+        elif (metric == METRIC4):
             return totalTransmissions(transmissionHist, lowerBound, upperBound)
-        elif (metric == 5):
+        elif (metric == METRIC5):
             return numContacts(transmissionHist, lowerBound, upperBound)
 
 
@@ -62,22 +74,13 @@ def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> d
         upperBound - upper bound of years range
         """
 
-        infectedPersons= []
-        people = []
-        numInfected = dict()
-        if isinstance(transmissionHist,str):
-            if transmissionHist.lower().endswith('.gz'):
-                lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]
-            else:
-                lines = [l.strip() for l in open(transmissionHist).read().strip().splitlines()]
-        else:
-            lines = [l.strip() for l in transmissionHist.read().strip().splitlines()]
+        infectedPersons= []; people = []; numInfected = dict()
+        lines = opengzip(transmissionHist)
 
         # Loop over each line in the file.
         for line in lines:
-            u,v,t = line.split('\t')
-            u = u.strip()
-            v = v.strip()
+            u,v,t = line.split(TAB_CHAR)
+            u = u.strip(); v = v.strip()
 
             # Only considers infections within a given range of years
             if (lowerBound > float(t)) | (float(t) > upperBound):
@@ -102,35 +105,39 @@ def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> d
 
 def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
-        TODO metric 2 - Titan
-
         Returns a dictionary where each key is an individual and their value
-        is their corresponding indirect infection count.
+        is their corresponding count as calculated by the slope linear regression
+        of their transmissions over time.
+
+        If the upperBound was not specified when running the script, it defaults
+        to being the time of the latest transmission.
 
         Parameters
         ----------
         tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
-        lowerBound - lower bound of years range
-        upperBound - upper bound of years range
+        lowerBound - lower bound of time range
+        upperBound - upper bound of time range
         """
 
-        infectedPersons= []
-        people = []
-        numInfected = dict()
-        if isinstance(transmissionHist,str):
-            if transmissionHist.lower().endswith('.gz'):
-                lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]
-            else:
-                lines = [l.strip() for l in open(transmissionHist).read().strip().splitlines()]
-        else:
-            lines = [l.strip() for l in transmissionHist.read().strip().splitlines()]
+        infectedPersons= []; people = []
+        # build timesInfected, a dict where each person is
+        # matched up with a list of times at which they transmitted
+        timesInfected = dict() 
+        lines = opengzip(transmissionHist)
 
-        # Loop over each line in the file.
+        # Deal with upper bound setting
+        isUpperBoundSet = True; latestInfectionTime = -1;
+        # Check if an upper bound for time was set
+        if upperBound == float('inf'):
+            isUpperBoundSet = False
+        else:
+            latestInfectionTime = upperBound
+
+        # Loop over each line in the transmissions file to build timesInfected
         for line in lines:
-            u,v,t = line.split('\t')
-            u = u.strip()
-            v = v.strip()
+            u,v,t = line.split(TAB_CHAR)
+            u = u.strip(); v = v.strip()
 
             # Only considers infections within a given range of years
             if (lowerBound > float(t)) | (float(t) > upperBound):
@@ -139,12 +146,63 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
             if u == 'None':
                 continue
 
-            if u not in numInfected:
-                numInfected[u] = 0
+            if u not in timesInfected:
+                timesInfected[u] = []
 
-            numInfected[u] += 1
+            # Append this time to u's list
+            timesInfected[u].append(float(t))
 
-        return numInfected
+            # Keep iterating to get the globally latest infection time
+            if not isUpperBoundSet and float(t) > latestInfectionTime:
+                latestInfectionTime = float(t)
+
+        # Build a dict with users as keys paired with their slopes
+        slopesDict = dict()
+
+        # Loop over all transmitters
+        for u in timesInfected:
+            # Build two lists, one with xCoordinates and 
+            # one with yCoordinates, for linear regression
+            x = np.empty(1); y = np.empty(1)
+
+            # Gets times of transmissions for transmitter u
+            times = timesInfected[u] 
+
+            # Plot up to the first transmission time, step 0
+            step = np.linspace(lowerBound, times[0], NUM_POINTS_PER_STEP, endpoint=True)
+            x = np.append(x, step)
+            y = np.append(y, list(repeat(0, NUM_POINTS_PER_STEP)))
+
+            # Loop over all the transmission times of u
+            for i in range(len(times)):
+
+                # At the last step (to the upperBound), 
+                # only plot the start point and then up to the latest time of 
+                # infection globally OR plot up to upperBound if its set
+                if (i == len(times) - 1):
+                    step = np.linspace(times[i], latestInfectionTime, 
+                                       NUM_POINTS_PER_STEP, endpoint=True)
+                    x = np.append(x, step)
+                    y = np.append(y, list(repeat(i + 1, NUM_POINTS_PER_STEP)))
+                    break
+
+                # plot the xcoords of this step
+                step = np.linspace(times[i], times[i+1], NUM_POINTS_PER_STEP, endpoint=True)
+                x = np.append(x, step)
+
+                # plot the ycoords of this step
+                y = np.append(y, list(repeat(i + 1, NUM_POINTS_PER_STEP)))
+
+            linregress = stats.linregress(x, y)
+            slopesDict[u] = linregress.slope
+
+            # TESTING - Plot the points and the best fit
+            # if (u == 'CNG0-COM1-4332'):
+                # plt.plot(x, y, 'o')
+                # plt.plot(x, float(linregress.intercept) + linregress.slope*x, 'r')
+                # plt.show()
+
+        return slopesDict
 
 
 def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
@@ -160,20 +218,12 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
         upperBound - upper bound of years range
         """
 
-        infectedPersons= []
-        people = []
-        numInfected = dict()
-        if isinstance(transmissionHist,str):
-            if transmissionHist.lower().endswith('.gz'):
-                lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]
-            else:
-                lines = [l.strip() for l in open(transmissionHist).read().strip().splitlines()]
-        else:
-            lines = [l.strip() for l in transmissionHist.read().strip().splitlines()]
+        infectedPersons= []; people = []; numInfected = dict()
+        lines = opengzip(transmissionHist)
 
         # Loop over each line in the file.
         for line in lines:
-            u,v,t = line.split('\t')
+            u,v,t = line.split(TAB_CHAR)
             u = u.strip()
             v = v.strip()
 
@@ -190,8 +240,9 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
             numInfected[u] += 1
 
         numIndirect = dict()
+
         for line in lines:
-            u,v,t = line.split('\t')
+            u,v,t = line.split(TAB_CHAR)
             u = u.strip()
             v = v.strip()
 
@@ -205,7 +256,7 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
             if u not in numIndirect:
                 numIndirect[u] = 0
 
-            # should get the number of people that were indirected impacted
+            # should get the number of people that were indirectly impacted
             if v in numInfected:
                 numIndirect[u] += numInfected.get(v)
 
@@ -225,20 +276,12 @@ def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> di
         upperBound - upper bound of years range
         """
 
-        infectedPersons= []
-        people = []
-        numInfected = dict()
-        if isinstance(transmissionHist,str):
-            if transmissionHist.lower().endswith('.gz'):
-                lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]
-            else:
-                lines = [l.strip() for l in open(transmissionHist).read().strip().splitlines()]
-        else:
-            lines = [l.strip() for l in transmissionHist.read().strip().splitlines()]
+        infectedPersons= []; people = []; numInfected = dict()
+        lines = opengzip(transmissionHist)
 
         # Loop over each line in the file.
         for line in lines:
-            u,v,t = line.split('\t')
+            u,v,t = line.split(TAB_CHAR)
             u = u.strip()
             v = v.strip()
 
@@ -254,10 +297,10 @@ def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> di
 
             numInfected[u] += 1
 
-
         numIndirect = dict()
+
         for line in lines:
-            u,v,t = line.split('\t')
+            u,v,t = line.split(TAB_CHAR)
             u = u.strip()
             v = v.strip()
 
@@ -305,16 +348,9 @@ def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         upperBound - Ignored for contact networks
         """
 
-        infectedPersons= []
-        people = []
+        infectedPersons= []; people = []
         numberContacts = dict()
-        if isinstance(transmissionHist,str):
-            if transmissionHist.lower().endswith('.gz'):
-                lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]
-            else:
-                lines = [l.strip() for l in open(transmissionHist).read().strip().splitlines()]
-        else:
-            lines = [l.strip() for l in transmissionHist.read().strip().splitlines()]
+        lines = opengzip(transmissionHist)
 
         # Loop over each line in the file.
         for line in lines:
@@ -366,30 +402,24 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
                         outfile.write("%s\t0\n" % p)
 
                 else:
-                        outfile.write("%s\t%d\n" % (p, infectionsDict[p]))
+                        outfile.write("%s\t%f\n" % (p, infectionsDict[p]))
 
 
-def calculateTauB(userOrder, outfile, reverse: bool) -> None:
+def opengzip(transmissionHist):
         """
-        Calculates the Kendall Tau B correlation coefficient between user ordering
-        and most optimal ordering, assuming that the counts of individuals in
-        infile sorted is the most optimal.
-        Outputs coefficient and pvalue in the following format: "<tau> <pvalue>".
-        Returns void.
+        Helper method - Opens a gzip and returns the lines of the file.
 
         Parameters
         ----------
-        userOrder- an ordering of infectors and their counts 
-                   - generated by the user's algorithm
-        outfile - the file the tau and pvalue are outputted
-        reverse - bool, true if user's ordering is compared to order sorted descending,
-                                        false if comparing to order sorted ascending
+        transmissionHist - the gzip to open. the file object with data on 
+                           tranmissions.
         """
-        optimalOrder = []
-        for i in range(len(userOrder)):
-            optimalOrder.append(i)
+        if isinstance(transmissionHist,str):
+            if transmissionHist.lower().endswith('.gz'):
+                lines = [l.strip() for l in gopen(transmissionHist,'rb').read().decode().strip().splitlines()]
+            else:
+                lines = [l.strip() for l in open(transmissionHist).read().strip().splitlines()]
+        else:
+            lines = [l.strip() for l in transmissionHist.read().strip().splitlines()]
 
-        tau, pvalue = stats.kendalltau([e[0] for e in optimalOrder], [e[0] for e in userOrder])
-
-        outfile.write("%s\t%s\n" % (tau, pvalue))
-
+        return lines
