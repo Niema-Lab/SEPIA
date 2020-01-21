@@ -44,4 +44,4 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
                         ascending order).
 ```
 
-- _orderCheck.py_ defines several functions used in the scripts above.
+- _efficacyFunctions.py_ defines several functions used in the scripts above.
