@@ -15,11 +15,12 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
         on the corresponding chosen metric.
 
         There are currently four metrics to choose from:
-        Metric 1 - 
+        Metric 1 - Finds the number of direct transmissions from one individual to another
         Metric 2 - 
-        Metric 3 -
-        Metric 4 -
-        Metric 5 -
+        Metric 3 - Finds the number of indirect transmissions from the individuals HIV was 
+        transmitted to from a given individual.
+        Metric 4 - Totals the numbers from metric 1 and metric 3 for each individual.
+        Metric 5 - Finds the number of contacts for each individual in the contact number.
 
         Returns a dictionary where each key is an individual and their value
         is their corresponding count.
@@ -291,7 +292,7 @@ def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> di
 
 def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict: 
         """
-        Counts the number of connections an individual has.
+        Counts the number of contacts an individual has.
 
         Returns a dictionary where each key is an individual and their value
         is their corresponding number of contacts in the file.
@@ -327,12 +328,18 @@ def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict:
             
             if u == 'None':
                 continue
-            
+           
+            # Add person to numberContacts if they don't already exist in the dict
             if v not in numberContacts:
                 numberContacts[v] = 0
-
+            
+            if t not in numberContacts:
+                numberContacts[t] = 0
+            
+            # Increment their number of contacts
             numberContacts[v] += 1
-        
+            numberContacts[t] += 1
+
         return numberContacts
 
 def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile) -> None:
