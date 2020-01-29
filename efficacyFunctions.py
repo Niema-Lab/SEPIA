@@ -219,8 +219,8 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
         upperBound - upper bound of years range
         """
         
-        #print("Enter the number of degrees away: ")
-        #x = int(input()) # takes in input for number of degrees away
+        print("Enter the number of degrees away: ")
+        x = int(input()) # takes in input for number of degrees away
 
         infectedPersons= []; people = []; numInfected = dict() # will be populated with each person's direct infectio count
         lines = opengzip(transmissionHist)
@@ -265,9 +265,6 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
         numIndirect = dict() # counts each person's number of indirect transmissions
         lastDegree = direct.copy()
 
-        #for y in lastDegree:
-           # print(y, lastDegree[y])
-
         thisDegree = dict()
 
         for n in range(1,x): # iterating through number of degrees away
@@ -280,7 +277,7 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
                 #print("2nd loop",lastDegree[key])
                 for value in lastDegree[key]:
                     #print("3rd loop:  value: ", value)
-                    thisDegree[key].extend(lastDegree[value])
+                    thisDegree[key].extend(direct[value])
                     #print("thisDegree", key, thisDegree[key])
             
             for key in thisDegree:
@@ -298,7 +295,7 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
                 numIndirect[elem] = 0
 
         for y in numIndirect:
-            #print(y, numIndirect[y])
+            print(y, numIndirect[y])
 
         return numIndirect
 
