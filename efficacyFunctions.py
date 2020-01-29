@@ -222,9 +222,9 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
         print("Enter the number of degrees away: ")
         x = int(input()) # takes in input for number of degrees away
 
-        infectedPersons= []; people = []; numInfected = dict() # will be populated with each person's direct infectio count
+        infectedPersons= []; people = []
         lines = opengzip(transmissionHist)
-        direct = dict() # will be populated with all of key's indirect transmission to a specified degree
+        direct = dict() # will be populated with all of key's indirect transmissions to a specified degree
         
         allIndividuals = []
 
@@ -242,8 +242,7 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
                 continue
 
             if u not in direct:
-                numInfected[u] = 0
-                direct[u] = [] # declaring an list associated with u
+                direct[u] = [] 
             
             if v not in direct:
                 direct[v] = []
@@ -254,48 +253,32 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
             if v not in allIndividuals:
                 allIndividuals.append(v)
 
-            #numInfected[u] += 1
             direct[u].append(v)
             
-        """
-        for y in indirectSum:
-            print(y)
-        """
-
         numIndirect = dict() # counts each person's number of indirect transmissions
         lastDegree = direct.copy()
 
         thisDegree = dict()
 
         for n in range(1,x): # iterating through number of degrees away
-            #print("loop")    
-            #print("start loop", lastDegree)
+           
             for key in lastDegree:
-                
                 if key not in thisDegree:
                     thisDegree[key] = []
-                #print("2nd loop",lastDegree[key])
                 for value in lastDegree[key]:
-                    #print("3rd loop:  value: ", value)
                     thisDegree[key].extend(direct[value])
-                    #print("thisDegree", key, thisDegree[key])
             
             for key in thisDegree:
                 if key not in numIndirect:
                     numIndirect[key] = 0
                 numIndirect[key] += len(thisDegree[key])
-                #print(key, ": ", numIndirect[key])
 
             lastDegree = thisDegree.copy()
             thisDegree.clear()
        
-
         for elem in allIndividuals:
             if elem not in numIndirect:
                 numIndirect[elem] = 0
-
-        for y in numIndirect:
-            print(y, numIndirect[y])
 
         return numIndirect
 
