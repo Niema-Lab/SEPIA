@@ -7,32 +7,30 @@ File implements several methods used in compute_efficiency.py.
 from gzip import open as gopen
 from sys import stderr
 import numpy as np
-import scipy.stats as stats # run 'pip install scipy' in your terminal
-import scipy
+import scipy.stats as stats 
 import matplotlib.pyplot as plt
 from itertools import repeat
 
 # CONSTANTS
-NUM_POINTS_PER_STEP = 10
-METRIC1 = 1; METRIC2 = 2; METRIC3 = 3; METRIC4 = 4; METRIC5 = 5;
+DEF_POINTS_PER_STEP = 10
+METRIC1 = 1; METRIC2 = 2; METRIC3 = 3; METRIC4 = 4; METRIC5 = 5; METRIC6 = 6;
 TAB_CHAR = '\t'
 
 
-def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) -> dict:
+def pairCounts(transmissionHist, contactNet, lowerBound: int, upperBound: int, metric: float) -> dict:
         """
         Pairs each individual with a count value, where a higher count value indicates
         that an individual has a higher priority. Count values are calculated based
         on the corresponding chosen metric.
 
-        There are currently four metrics to choose from:
+        There are currently six metrics to choose from:
         Metric 1 - Finds the number of direct transmissions from one individual to another
-        Metric 2 - 
-        Metric 3 - Finds the number of indirect transmissions from the individuals HIV was 
+        Metric 2 - TODO
+        Metric 3 - Finds the number of indirect transmissions from the individuals HIV was
         transmitted to from a given individual.
         Metric 4 - Totals the numbers from metric 1 and metric 3 for each individual.
         Metric 5 - Finds the number of contacts for each individual in the contact number.
-
-        There are currently five metrics to choose from.
+        Metric 6 - TODO
 
         Returns a dictionary where each key is an individual and their value
         is their corresponding count.
@@ -40,24 +38,45 @@ def pairCounts(transmissionHist, lowerBound: int, upperBound: int, metric: int) 
         Parameters
         ----------
         tranmissionHist - the file object with data on tranmissions used to build the
-                                          dictionary
-                          NOTE: metric 5 requires a contact network file instead
+                          dictionary
+        contactNet - the file object with data on the contact network used to build the
+                          dictionary
         lowerBound - lower bound of time range
         upperBound - upper bound of timerange
-        metric - int, specifies the chosen metric
+        metric - float, specifies the chosen metric
         """
 
-        # call the function corresponding to the chosen metric
+        # Error checking, check if necessary files were provided
+        if metric in [METRIC1, METRIC2, METRIC3, METRIC4, METRIC6] and transmissionHist == '':
+            raise ValueError("Missing transmission history file for metric " + str(metric) + ".\nSpecify with '-t TRANSMISSIONHIST'")
+        if metric in [METRIC5, METRIC6] and contactNet == '':
+            raise ValueError("Missing contact network file for metric " + str(metric) + ".\nSpecify with '-c CONTACTNET'")
+
+        # Call the function corresponding to the chosen metric
         if (metric == METRIC1):
             return directTransmissions(transmissionHist, lowerBound, upperBound)
-        elif (metric == METRIC2):
-            return bestfitGraph(transmissionHist, lowerBound, upperBound)
-        elif (metric == METRIC3):
+
+        elif (int(metric) == METRIC2):
+            # Parse num dots per line (linspace) from the input and convert it to an int
+            numPointsPerStep = str(metric).split("."); numPointsPerStep = float(numPointsPerStep[1])
+            while not numPointsPerStep.is_integer():
+                numPointsPerStep *= 10
+            return bestfitGraph(transmissionHist, lowerBound, upperBound, int(numPointsPerStep))
+
+        elif (int(metric) == METRIC3):
             return indirectTransmissions(transmissionHist, lowerBound, upperBound)
+
         elif (metric == METRIC4):
             return totalTransmissions(transmissionHist, lowerBound, upperBound)
+
         elif (metric == METRIC5):
-            return numContacts(transmissionHist, lowerBound, upperBound)
+            return numContacts(contactNet, lowerBound, upperBound)
+
+        elif (metric == METRIC6):
+            return numContactInfect(transmissionHist, contactNet, lowerBound, upperBound)
+
+        else:
+            raise ValueError("No metric " + str(metric) + " exists.\nPlease specify one between 1-6.")
 
 
 def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
@@ -104,7 +123,7 @@ def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> d
         return numInfected
 
 
-def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
+def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPerStep: int) -> dict:
         """
         Returns a dictionary where each key is an individual and their value
         is their corresponding count as calculated by the slope linear regression
@@ -119,12 +138,18 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
                                           dictionary
         lowerBound - lower bound of time range
         upperBound - upper bound of time range
+        numPointsPerStep - TODO
         """
+
+        # Use default if none specified
+        if numPointsPerStep == 0:
+            numPointsPerStep = DEF_POINTS_PER_STEP
+
 
         infectedPersons= []; people = []
         # build timesInfected, a dict where each person is
         # matched up with a list of times at which they transmitted
-        timesInfected = dict() 
+        timesInfected = dict()
         lines = opengzip(transmissionHist)
 
         # Deal with upper bound setting
@@ -162,37 +187,37 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
 
         # Loop over all transmitters
         for u in timesInfected:
-            # Build two lists, one with xCoordinates and 
+            # Build two lists, one with xCoordinates and
             # one with yCoordinates, for linear regression
             x = np.empty(1); y = np.empty(1)
 
             # Gets times of transmissions for transmitter u
-            times = timesInfected[u] 
+            times = timesInfected[u]
 
             # Plot up to the first transmission time, step 0
-            step = np.linspace(lowerBound, times[0], NUM_POINTS_PER_STEP, endpoint=True)
+            step = np.linspace(lowerBound, times[0], numPointsPerStep, endpoint=True)
             x = np.append(x, step)
-            y = np.append(y, list(repeat(0, NUM_POINTS_PER_STEP)))
+            y = np.append(y, list(repeat(0, numPointsPerStep)))
 
             # Loop over all the transmission times of u
             for i in range(len(times)):
 
-                # At the last step (to the upperBound), 
-                # only plot the start point and then up to the latest time of 
+                # At the last step (to the upperBound),
+                # only plot the start point and then up to the latest time of
                 # infection globally OR plot up to upperBound if its set
                 if (i == len(times) - 1):
-                    step = np.linspace(times[i], latestInfectionTime, 
-                                       NUM_POINTS_PER_STEP, endpoint=True)
+                    step = np.linspace(times[i], latestInfectionTime,
+                                       numPointsPerStep, endpoint=True)
                     x = np.append(x, step)
-                    y = np.append(y, list(repeat(i + 1, NUM_POINTS_PER_STEP)))
+                    y = np.append(y, list(repeat(i + 1, numPointsPerStep)))
                     break
 
                 # plot the xcoords of this step
-                step = np.linspace(times[i], times[i+1], NUM_POINTS_PER_STEP, endpoint=True)
+                step = np.linspace(times[i], times[i+1], numPointsPerStep, endpoint=True)
                 x = np.append(x, step)
 
                 # plot the ycoords of this step
-                y = np.append(y, list(repeat(i + 1, NUM_POINTS_PER_STEP)))
+                y = np.append(y, list(repeat(i + 1, numPointsPerStep)))
 
             linregress = stats.linregress(x, y)
             slopesDict[u] = linregress.slope
@@ -334,6 +359,7 @@ def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> di
 
         return numTotal
 
+
 def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict: 
         """
         Counts the number of contacts an individual has.
@@ -362,22 +388,95 @@ def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict:
             u,v,t,w,x = line.split('\t')
             u = u.strip()
             v = v.strip()
-            
+
             if u == 'None':
                 continue
-           
+
             # Add person to numberContacts if they don't already exist in the dict
             if v not in numberContacts:
                 numberContacts[v] = 0
-            
+
             if t not in numberContacts:
                 numberContacts[t] = 0
-            
+
             # Increment their number of contacts
             numberContacts[v] += 1
             numberContacts[t] += 1
 
         return numberContacts
+
+
+def numContactInfect(transmissionHist, contactNet, lowerBound: int, upperBound: int) -> dict:
+        """
+        Counts the number of contacts and transmissions a person has had
+
+        Returns a dictionary where each key is an individual and their value
+        is their corresponding number of contacts in the file.
+
+        Parameters
+        ----------
+        transmissionHist - the file object with data on transmissions used to
+        build the dictionary.
+        contactNet - includes all the contacts a person has had
+        lowerBound - Ignored for contact networks
+        upperBound - Ignored for contact networks
+        """
+
+        infectedPersons= []; people = []; numInfected = dict()
+        lines = opengzip(transmissionHist)
+
+        # Loop over each line in the file.
+        for line in lines:
+            u,v,t = line.split(TAB_CHAR)
+            u = u.strip()
+            v = v.strip()
+
+            # Only considers infections within a given range of years
+            if (lowerBound > float(t)) | (float(t) > upperBound):
+                continue
+
+            if u == 'None':
+                continue
+
+            if u not in numInfected:
+                numInfected[u] = 0
+
+            numInfected[u] += 1
+
+
+        infectedPersons= []; people = []
+        totalContactCount = 0
+        lines = opengzip(contactNet)
+        numberContacts = dict()
+
+        # Loop over each line in the file.
+        for line in lines:
+            # Skip over lines listing the nodes
+            if(line[0:4] == 'NODE'):
+                    continue
+
+            u,v,t,w,x = line.split('\t')
+            u = u.strip()
+            v = v.strip()
+
+            if u == 'None':
+                continue
+
+            # Add person to numberContacts if they don't already exist in the dict
+            if v not in numberContacts:
+                numberContacts[v] = 0
+
+            if t not in numberContacts:
+                numberContacts[t] = 0
+
+            # Increment their number of contacts
+            if t in numInfected:
+                numberContacts[v] += numInfected[t]
+            if v in numInfected:
+                numberContacts[t] += numInfected[v]
+
+        return numberContacts
+
 
 def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) -> None:
         """
@@ -391,8 +490,9 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) 
         ----------
         infectionsDict - a dict with keys as infectors and values as
                                          their infection counts
-        infile - a file with the user's ordering of individuals
+        inputOrder - the user's ordering of individuals
         outfile - a file where each line of output is written
+        metric - int, a file denoting which metric was performed
         """
 
         for line in inputOrder:
@@ -409,15 +509,16 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) 
                             outfile.write("%s\t%d\n" % (p, infectionsDict[p]))
 
 
-def opengzip(transmissionHist):
+def opengzip(transmissionHist: str) -> list:
         """
         Helper method - Opens a gzip and returns the lines of the file.
 
         Parameters
         ----------
-        transmissionHist - the gzip to open. the file object with data on 
+        transmissionHist - the gzip to open. the file object with data on
                            tranmissions.
         """
+        
 
         if isinstance(transmissionHist,str):
             if transmissionHist.lower().endswith('.gz'):
