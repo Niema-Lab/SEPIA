@@ -206,7 +206,7 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         return slopesDict
 
 
-def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
+def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, upperBound: int) -> dict:
         """
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
@@ -215,12 +215,10 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
         ----------
         tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
+        numDegrees - number of degrees away to measure indirect transmissions to
         lowerBound - lower bound of years range
         upperBound - upper bound of years range
         """
-        
-        print("Enter the number of degrees away: ")
-        x = int(input()) # takes in input for number of degrees away
 
         infectedPersons= []; people = []
         lines = opengzip(transmissionHist)
@@ -260,7 +258,7 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
 
         thisDegree = dict()
 
-        for n in range(1,x): # iterating through number of degrees away
+        for n in range(1,numDegrees): # iterating through number of degrees away
            
             for key in lastDegree:
                 if key not in thisDegree:
