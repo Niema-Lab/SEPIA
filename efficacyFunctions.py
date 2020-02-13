@@ -231,7 +231,7 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
         return slopesDict
 
 
-def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
+def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, upperBound: int) -> dict:
         """
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
@@ -240,12 +240,16 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
         ----------
         tranmissionHist - the file object with data on tranmissions used to build the
                                           dictionary
+        numDegrees - number of degrees away to measure indirect transmissions to
         lowerBound - lower bound of years range
         upperBound - upper bound of years range
         """
 
-        infectedPersons= []; people = []; numInfected = dict()
+        infectedPersons= []; people = []
         lines = opengzip(transmissionHist)
+        direct = dict() # will be populated with all of key's indirect transmissions to a specified degree
+        
+        allIndividuals = []
 
         # Loop over each line in the file.
         for line in lines:
@@ -260,34 +264,46 @@ def indirectTransmissions(transmissionHist, lowerBound: int, upperBound: int) ->
             if u == 'None':
                 continue
 
-            if u not in numInfected:
-                numInfected[u] = 0
+            if u not in direct:
+                direct[u] = [] 
+            
+            if v not in direct:
+                direct[v] = []
+            
+            if u not in allIndividuals:
+                allIndividuals.append(u)
 
-            numInfected[u] += 1
+            if v not in allIndividuals:
+                allIndividuals.append(v)
 
-        numIndirect = dict()
+            direct[u].append(v)
+            
+        numIndirect = dict() # counts each person's number of indirect transmissions
+        lastDegree = direct.copy()
 
-        for line in lines:
-            u,v,t = line.split(TAB_CHAR)
-            u = u.strip()
-            v = v.strip()
+        thisDegree = dict()
 
-            # Only considers infections within a given range of years
-            if (lowerBound > float(t)) | (float(t) > upperBound):
-                continue
+        for n in range(1,numDegrees): # iterating through number of degrees away
+           
+            for key in lastDegree:
+                if key not in thisDegree:
+                    thisDegree[key] = []
+                for value in lastDegree[key]:
+                    thisDegree[key].extend(direct[value])
+            
+            for key in thisDegree:
+                if key not in numIndirect:
+                    numIndirect[key] = 0
+                numIndirect[key] += len(thisDegree[key])
 
-            if u == 'None':
-                continue
-
-            if u not in numIndirect:
-                numIndirect[u] = 0
-
-            # should get the number of people that were indirectly impacted
-            if v in numInfected:
-                numIndirect[u] += numInfected.get(v)
+            lastDegree = thisDegree.copy()
+            thisDegree.clear()
+       
+        for elem in allIndividuals:
+            if elem not in numIndirect:
+                numIndirect[elem] = 0
 
         return numIndirect
-
 
 def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
