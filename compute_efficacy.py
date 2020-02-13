@@ -8,10 +8,10 @@ from efficacyFunctions import *
 
 
 if __name__ == "__main__":
-    # parse user arguments [-h] -m METRIC [-i INPUT] [-o OUTPUT] -t TRANMSISSIONHIST -s START [-e END]
+    # parse user arguments  [-h] -m METRIC [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] -s START [-e END]
     import argparse
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('-m', '--metric', required=True, type=float, help="Metric of prioritization")
+    parser.add_argument('-m', '--metric', required=True, type=float, help="Metric of prioritization (1-6)")
     parser.add_argument('-i', '--input', required=False, type=str, default='stdin', help="Input File - User's Ordering")
     parser.add_argument('-o', '--output', required=False, type=str, default='stdout', help="Output File")
     parser.add_argument('-t', '--tranmsissionHist', required=False, type=str, default='', help='Tranmission History File')

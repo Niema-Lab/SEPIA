@@ -14,7 +14,6 @@ or HIV-TRACE.
 """
 
 # Constants
-START_TIME = 9
 EXPERIMENTS = ['SAMPLE-FIRSTART_ARTRATE-4','SAMPLE-FIRSTART_ARTRATE-2','SAMPLE-FIRSTART_ARTRATE-1',
 'SAMPLE-FIRSTART_STOPRATE-0.25x','SAMPLE-FIRSTART_STOPRATE-0.5x','SAMPLE-FIRSTART_STOPRATE-2x',
 'SAMPLE-FIRSTART_STOPRATE-4x','SAMPLE-FIRSTART_EXPDEGREE-20','SAMPLE-FIRSTART_EXPDEGREE-30']
@@ -29,6 +28,10 @@ INTERMEDIATEFILE = "intermediate_file_violinplot.txt"
 
 algorithms = [PROACTFMT, HIVTRACEFMT]
 colors = { PROACTFMT : '#161f54', HIVTRACEFMT : '#a16c18'}
+
+# Parameters of choice
+START_TIME = 9
+METRIC_CHOICE = 1
 
 
 def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, algm: str) -> float:
@@ -48,7 +51,7 @@ def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, 
 	outputFile = open(INTERMEDIATEFILE, 'w')
 
 	# Run compute_efficacy with inputFile and outputFile
-	bashCommand = "py compute_efficacy.py -m 1 -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
+	bashCommand = "py compute_efficacy.py -m " + METRIC_CHOICE + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
 	subprocess.call(bashCommand.split(), stdout=outputFile, shell=True)
 	outputFile.close()
 
