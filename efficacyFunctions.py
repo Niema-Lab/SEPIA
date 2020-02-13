@@ -64,7 +64,11 @@ def pairCounts(transmissionHist, contactNet, lowerBound: int, upperBound: int, m
             return bestfitGraph(transmissionHist, lowerBound, upperBound, int(numPointsPerStep))
 
         elif (int(metric) == METRIC3):
-            return indirectTransmissions(transmissionHist, lowerBound, upperBound)
+            # Parse number of degrees away and convert it to an int
+            numDegrees = str(metric).split("."); numDegrees = float(numDegrees[1])
+            while not numDegrees.is_integer():
+                numDegrees *= 10
+            return indirectTransmissions(transmissionHist, int(numDegrees), lowerBound, upperBound)
 
         elif (metric == METRIC4):
             return totalTransmissions(transmissionHist, lowerBound, upperBound)
@@ -100,19 +104,20 @@ def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> d
         # Loop over each line in the file.
         for line in lines:
             u,v,t = line.split(TAB_CHAR)
-            u = u.strip(); v = v.strip()
+            u = u.strip(); v = v.strip() # strip leading/trailing white space
 
             # Only considers infections within a given range of years
             if (lowerBound > float(t)) | (float(t) > upperBound):
                 continue
 
-            if u == 'None':
+            if not u or u == 'None':
                 continue
 
-            if u not in numInfected:
-                numInfected[u] = 0
+            if isValidString(u):
+                if u not in numInfected:
+                    numInfected[u] = 0
 
-            numInfected[u] += 1
+                numInfected[u] += 1
 
         """
         # Print the output of all individuals, unsorted
@@ -515,14 +520,32 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) 
 
                 p = line.strip()
 
-                if p not in infectionsDict.keys():
-                        outfile.write("%s\t0\n" % p)
+                if p in infectionsDict.keys() and isValidString(p):
 
-                else:
-                        if metric == METRIC2:
-                            outfile.write("%s\t%f\n" % (p, infectionsDict[p]))
-                        else:
-                            outfile.write("%s\t%d\n" % (p, infectionsDict[p]))
+                    if metric == METRIC2:
+                        outfile.write("%s\t%f\n" % (p, infectionsDict[p]))
+                    else:
+                        outfile.write("%s\t%d\n" % (p, infectionsDict[p]))
+
+
+def isValidString(string: str) -> bool:
+    """
+    Checks if a string has at least a number or a letter.
+
+    Used to check if the string is a valid individual key.
+
+    Parameters
+    ----------
+    string - string to be checked
+    """
+
+    hasLetter = False; hasNumber = False;
+    for i in string:
+        if i.isalpha():
+            hasLetter = True
+        if i.isdigit():
+            hasNumber = True
+    return hasLetter or hasNumber
 
 
 def opengzip(transmissionHist: str) -> list:
