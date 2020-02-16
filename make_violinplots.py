@@ -5,6 +5,7 @@ from seaborn import violinplot
 import matplotlib.pyplot as plt
 from itertools import repeat
 import scipy.stats as stats 
+import pandas as pd
 
 
 """
@@ -14,12 +15,13 @@ or HIV-TRACE.
 """
 
 # Constants
+#EXPERIMENTS = ['SAMPLE-FIRSTART_ARTRATE-4']
 EXPERIMENTS = ['SAMPLE-FIRSTART_ARTRATE-4','SAMPLE-FIRSTART_ARTRATE-2','SAMPLE-FIRSTART_ARTRATE-1',
 'SAMPLE-FIRSTART_STOPRATE-0.25x','SAMPLE-FIRSTART_STOPRATE-0.5x','SAMPLE-FIRSTART_STOPRATE-2x',
 'SAMPLE-FIRSTART_STOPRATE-4x','SAMPLE-FIRSTART_EXPDEGREE-20','SAMPLE-FIRSTART_EXPDEGREE-30']
 
 SIMS_DIR = 'simulations/'
-FIGURES_DIR = 'figures/'
+FIGURES_DIR = 'figs/'
 
 TRANSMISSIONFMT = ".transmissions.txt.gz"
 PROACTFMT = ".time9.ft.mv.proact.txt.gz"
@@ -31,7 +33,7 @@ colors = { PROACTFMT : '#161f54', HIVTRACEFMT : '#a16c18'}
 
 # Parameters of choice
 START_TIME = 9
-METRIC_CHOICE = 1
+METRIC_CHOICE = 3.2
 
 
 def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, algm: str) -> float:
@@ -51,19 +53,9 @@ def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, 
 	outputFile = open(INTERMEDIATEFILE, 'w')
 
 	# Run compute_efficacy with inputFile and outputFile
-	bashCommand = "py compute_efficacy.py -m " + METRIC_CHOICE + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
+	bashCommand = "py compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
 	subprocess.call(bashCommand.split(), stdout=outputFile, shell=True)
 	outputFile.close()
-
-	# # Calculate tau value for this experiment
-	# # Run compute_taub with inputFile
-	# bashCommand = "py compute_taub.py -i " + INTERMEDIATEFILE
-	# process2 = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, shell=True)
-
-	# # Format the taub value from the script just run
-	# output = str(process2.communicate()[0]); process2.stdout.close()
-	# output1 = output
-	# output = re.split(r"\'", output); output = re.split(r"\\", output[1])
 
 	efficacy = [[v.strip() for v in l.strip().split('\t')] for l in open(INTERMEDIATEFILE).read().strip().splitlines()]
 
@@ -83,15 +75,20 @@ def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, 
 
 # Script ====================================================================
 
+# Initializing our dataframe
+cols = ['Experiment', 'Tau','Algorithm']
+df = pd.DataFrame(columns = cols)
+
+
 # Iterate through experiments
 for experiment in EXPERIMENTS:
 
-	# For plotting the violin for this experiment
-	x = [] # Denotes which prioritization method was used per Tau-b value
-	y = [] # Tau-b values
-
 	# Iterate over algorithms, PROACT then HIV-TRACE
 	for a in algorithms:
+
+		# For plotting the violin for a in this experiment
+		x = [] # Denotes which prioritization method was used per Tau-b value
+		y = [] # Tau-b values
 
 		# Iterate over all 20 simulations per experiment
 		for i in range(1,21):
@@ -106,15 +103,28 @@ for experiment in EXPERIMENTS:
 			transmissionFile = SIMS_DIR +  experiment + "/" + intStr + TRANSMISSIONFMT
 
 			# Calculate tau for this simulation w/ ProACT
-			tau = calculateTauSimulation(transmissionFile, experiment, intStr, a);
-			x.append(a); y.append(tau); 
+			tau = calculateTauSimulation(transmissionFile, experiment, intStr, a)
 
-		# Make the violin plot for this metric's experiment
-		ax=violinplot(x=x, y=y, label=list(range(0, len(x))), palette=colors, dtype='float')
+			temp = pd.DataFrame([[experiment, tau, a]], columns= cols)
+			df = df.append(temp)
 
-		# End inner for-loop
+		# End algorithm for-loop
 
-	# Save the fig automatically
-	fig = ax.get_figure(); fig.savefig(FIGURES_DIR + 'figure' + experiment + '.png')
-	# Clear current figure window
-	plt.clf()
+	# End experiment for loop
+
+
+# Make the violin plot for all simulations 
+ax = violinplot(x="Experiment", y="Tau", hue="Algorithm", data=df, dodge=False, palette=colors)
+
+# Reformat graph
+ax.set_xticklabels(ax.get_xticklabels(), rotation=90, horizontalalignment='right')
+
+# Save the fig automatically
+fig = ax.get_figure(); fig.savefig(FIGURES_DIR + 'm' + str(METRIC_CHOICE) + '_tau' + '.png')
+
+# print(df["Tau"])
+
+# Clear current figure window
+plt.clf()
+
+#py ./compute_efficacy.py -i simulations/SAMPLE-FIRSTART_ARTRATE-4/01.time9.ft.mv.proact.txt.gz -t simulations/SAMPLE-FIRSTART_ARTRATE-4/01.transmissions.txt.gz -s 9 -m 3.2 -o out.txt

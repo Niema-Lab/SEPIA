@@ -23,6 +23,9 @@ def pairCounts(transmissionHist, contactNet, lowerBound: int, upperBound: int, m
         that an individual has a higher priority. Count values are calculated based
         on the corresponding chosen metric.
 
+        This function calls other functions that handle building the dictionaries for the chosen metric
+        and handles error checking/input formatting.
+
         There are currently six metrics to choose from:
         Metric 1 - Finds the number of direct transmissions from one individual to another
         Metric 2 - TODO
@@ -68,6 +71,10 @@ def pairCounts(transmissionHist, contactNet, lowerBound: int, upperBound: int, m
             numDegrees = str(metric).split("."); numDegrees = float(numDegrees[1])
             while not numDegrees.is_integer():
                 numDegrees *= 10
+
+            # If number degrees away is less than 2, default to 2
+            if numDegrees < 2:
+                numDegrees = 2
             return indirectTransmissions(transmissionHist, int(numDegrees), lowerBound, upperBound)
 
         elif (metric == METRIC4):
@@ -113,17 +120,10 @@ def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> d
             if not u or u == 'None':
                 continue
 
-            if isValidString(u):
-                if u not in numInfected:
-                    numInfected[u] = 0
+            if u not in numInfected:
+                numInfected[u] = 0
 
-                numInfected[u] += 1
-
-        """
-        # Print the output of all individuals, unsorted
-        for u in numInfected:
-                print("%s\t%d" % (u, numInfected[u]))
-        """
+            numInfected[u] += 1
 
         return numInfected
 
@@ -309,6 +309,7 @@ def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, up
                 numIndirect[elem] = 0
 
         return numIndirect
+
 
 def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
@@ -520,32 +521,16 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) 
 
                 p = line.strip()
 
-                if p in infectionsDict.keys() and isValidString(p):
+                if p in infectionsDict.keys():
 
                     if metric == METRIC2:
                         outfile.write("%s\t%f\n" % (p, infectionsDict[p]))
                     else:
                         outfile.write("%s\t%d\n" % (p, infectionsDict[p]))
 
-
-def isValidString(string: str) -> bool:
-    """
-    Checks if a string has at least a number or a letter.
-
-    Used to check if the string is a valid individual key.
-
-    Parameters
-    ----------
-    string - string to be checked
-    """
-
-    hasLetter = False; hasNumber = False;
-    for i in string:
-        if i.isalpha():
-            hasLetter = True
-        if i.isdigit():
-            hasNumber = True
-    return hasLetter or hasNumber
+                else:
+                    # individual not in the dictionary, just print them with 0 infections
+                    outfile.write("%s\t0\n" % (p))
 
 
 def opengzip(transmissionHist: str) -> list:
