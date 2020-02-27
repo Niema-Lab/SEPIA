@@ -33,7 +33,7 @@ colors = { PROACTFMT : '#161f54', HIVTRACEFMT : '#a16c18'}
 
 # Parameters of choice
 START_TIME = 9
-METRIC_CHOICE = 3.2
+METRIC_CHOICE = 5
 
 
 def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, algm: str) -> float:
