@@ -54,7 +54,7 @@ def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, 
 
 	# Run compute_efficacy with inputFile and outputFile
 	bashCommand = "py compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
-	subprocess.call(bashCommand.split(), stdout=outputFile, shell=True)
+	subprocess.call(bashCommand.split(), stdout=outputFile)
 	outputFile.close()
 
 	efficacy = [[v.strip() for v in l.strip().split('\t')] for l in open(INTERMEDIATEFILE).read().strip().splitlines()]
