@@ -19,6 +19,8 @@ TAB_CHAR = '\t'
 
 def pairCounts(transmissionHist, contactNet, lowerBound: int, upperBound: int, metric: float) -> dict:
         """
+        DRIVER, DIRECTLY CALLED FROM COMPUTE_EFFICACY 
+
         Pairs each individual with a count value, where a higher count value indicates
         that an individual has a higher priority. Count values are calculated based
         on the corresponding chosen metric.
@@ -28,12 +30,12 @@ def pairCounts(transmissionHist, contactNet, lowerBound: int, upperBound: int, m
 
         There are currently six metrics to choose from:
         Metric 1 - Finds the number of direct transmissions from one individual to another
-        Metric 2 - TODO
+        Metric 2 - Performs linear regression per individual on to analyze their rate of infection.
         Metric 3 - Finds the number of indirect transmissions from the individuals HIV was
         transmitted to from a given individual.
         Metric 4 - Totals the numbers from metric 1 and metric 3 for each individual.
         Metric 5 - Finds the number of contacts for each individual in the contact number.
-        Metric 6 - TODO
+        Metric 6 - TODO - MCKENNA!!
 
         Returns a dictionary where each key is an individual and their value
         is their corresponding count.
@@ -75,6 +77,7 @@ def pairCounts(transmissionHist, contactNet, lowerBound: int, upperBound: int, m
             # If number degrees away is less than 2, default to 2
             if numDegrees < 2:
                 numDegrees = 2
+
             return indirectTransmissions(transmissionHist, int(numDegrees), lowerBound, upperBound)
 
         elif (metric == METRIC4):
@@ -90,8 +93,12 @@ def pairCounts(transmissionHist, contactNet, lowerBound: int, upperBound: int, m
             raise ValueError("No metric " + str(metric) + " exists.\nPlease specify one between 1-6.")
 
 
+# FUNCTIONS PERFORMING DIFFERENT METRICS (1-6) --------------------------------------------------------------------------
+
 def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
+        METRIC 1
+
         Counts the number of times each individual infected someone else in a file.
 
         Returns a dictionary where each key is an individual and their value
@@ -130,6 +137,8 @@ def directTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> d
 
 def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPerStep: int) -> dict:
         """
+        METRIC 2
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding count as calculated by the slope linear regression
         of their transmissions over time.
@@ -238,6 +247,8 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
 
 def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, upperBound: int) -> dict:
         """
+        METRIC 3
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
 
@@ -313,6 +324,8 @@ def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, up
 
 def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> dict:
         """
+        METRIC 4
+
         Returns a dictionary where each key is an individual and their value
         is their corresponding indirect infection count.
 
@@ -384,6 +397,8 @@ def totalTransmissions(transmissionHist, lowerBound: int, upperBound: int) -> di
 
 def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict: 
         """
+        METRIC 5
+
         Counts the number of contacts an individual has.
 
         Returns a dictionary where each key is an individual and their value
@@ -430,7 +445,9 @@ def numContacts(transmissionHist, lowerBound: int, upperBound: int) -> dict:
 
 def numContactInfect(transmissionHist, contactNet, lowerBound: int, upperBound: int) -> dict:
         """
-        Counts the number of contacts and transmissions a person has had
+        METRIC 6
+
+        Counts the number of contacts and transmissions a person has had.
 
         Returns a dictionary where each key is an individual and their value
         is their corresponding number of contacts in the file.
@@ -499,6 +516,8 @@ def numContactInfect(transmissionHist, contactNet, lowerBound: int, upperBound: 
 
         return numberContacts
 
+
+# HELPER METHODS  -----------------------------------------------------------------------------------------------------
 
 def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) -> None:
         """
