@@ -1,4 +1,4 @@
-# SEPIA
+# SEPIA - SIMULATION-BASED EVALUATION OF PRIORITIZATION ALGORITHMS
 
 A framework to evaluate the accuracy of a list that prioritizes individuals with HIV from greatest to least based on their likelihood to spread HIV.
 
