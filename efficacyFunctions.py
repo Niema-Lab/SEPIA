@@ -265,8 +265,6 @@ def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, up
         lines = opengzip(transmissionHist)
         direct = dict() # will be populated with all of key's indirect transmissions to a specified degree
         
-        allIndividuals = []
-
         # Loop over each line in the file.
         for line in lines:
             u,v,t = line.split(TAB_CHAR)
@@ -280,18 +278,13 @@ def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, up
             if u == 'None':
                 continue
 
+            # creates entry in direct for all individuals, including those w/o outgoing transmissions
             if u not in direct:
                 direct[u] = [] 
             
             if v not in direct:
                 direct[v] = []
             
-            if u not in allIndividuals:
-                allIndividuals.append(u)
-
-            if v not in allIndividuals:
-                allIndividuals.append(v)
-
             direct[u].append(v)
             
         numIndirect = dict() # counts each person's number of indirect transmissions
@@ -301,12 +294,14 @@ def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, up
 
         for n in range(1,numDegrees): # iterating through number of degrees away
            
+            # adds infectees at current degree to list in thisDegree
             for key in lastDegree:
                 if key not in thisDegree:
                     thisDegree[key] = []
                 for value in lastDegree[key]:
                     thisDegree[key].extend(direct[value])
-            
+
+            # adds count at this degree to individuals indirect transmisisons count
             for key in thisDegree:
                 if key not in numIndirect:
                     numIndirect[key] = 0
@@ -315,10 +310,6 @@ def indirectTransmissions(transmissionHist, numDegrees: int, lowerBound: int, up
             lastDegree = thisDegree.copy()
             thisDegree.clear()
        
-        for elem in allIndividuals:
-            if elem not in numIndirect:
-                numIndirect[elem] = 0
-
         return numIndirect
 
 
