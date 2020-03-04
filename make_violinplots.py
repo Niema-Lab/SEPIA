@@ -73,8 +73,8 @@ def calculateTauSimulation(transmissionFile: str, contactNetFile: str, experimen
 
 	# Run compute_efficacy with inputFile and outputFile
 
-	bashCommand = "python3 compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
-	# bashCommand = "python3 compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME) + " -c" + contactNetFile
+	# bashCommand = "python3 compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
+	bashCommand = "python3 compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME) + " -c" + contactNetFile
 	subprocess.call(bashCommand.split(), stdout=outputFile)
 	outputFile.close()
 
