@@ -29,6 +29,7 @@ SIMS_DIR = 'simulations/'
 FIGURES_DIR = 'figs/'
 # File names/formatting
 TRANSMISSIONFMT = ".transmissions.txt.gz"
+CONTACTNETFMT = '.contacts.txt.gz'
 PROACTFMT = ".time9.ft.mv.proact.txt.gz"
 HIVTRACEFMT = ".time9.tn93.hivtrace.growth.ordering.txt.gz"
 INTERMEDIATEFILE = "intermediate_file_violinplot.txt" # file where output of compute efficacy is saved
@@ -54,7 +55,7 @@ x_labels = {
 }
 
 
-def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, algm: str) -> float:
+def calculateTauSimulation(transmissionFile: str, contactNetFile: str, experiment: str, intStr: str, algm: str) -> float:
 	"""
 	Helper method for calculating the Tau value for a certain simulation.
 
@@ -71,7 +72,7 @@ def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, 
 	outputFile = open(INTERMEDIATEFILE, 'w')
 
 	# Run compute_efficacy with inputFile and outputFile
-	bashCommand = "py compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
+	bashCommand = "python3 compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME) + " -c" + contactNetFile
 	subprocess.call(bashCommand.split(), stdout=outputFile)
 	outputFile.close()
 
@@ -118,10 +119,12 @@ for experiment in EXPERIMENTS:
 			else:
 				intStr = str(i)
 
-			transmissionFile = SIMS_DIR +  experiment + "/" + intStr + TRANSMISSIONFMT
+			fileFormatStr = SIMS_DIR + experiment + "/" + intStr
+			transmissionFile = fileFormatStr + TRANSMISSIONFMT
+			contactNetFile = fileFormatStr + CONTACTNETFMT
 
 			# Calculate tau for this simulation w/ ProACT
-			tau = calculateTauSimulation(transmissionFile, experiment, intStr, a)
+			tau = calculateTauSimulation(transmissionFile, contactNetFile, experiment, intStr, a)
 
 			temp = pd.DataFrame([[x_labels[experiment], tau, algorithmNames[a]]], columns= cols)
 			df = df.append(temp)
