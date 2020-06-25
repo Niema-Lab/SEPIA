@@ -124,6 +124,10 @@ With this metric, we find the number of contacts an individual has.
 
 Each individual's count for their number of contacts is found through totaling the number of contacts they have from themselves to another individual. If Person _A_ had Person _B_ and Person _C_ in their contact network, Person _A_ would have a count of 2. 
 
+Let an individual have contact with **_n_** individuals, where each is an individual **_i_** from 1,2...**_n_**. Thus, the count will be formally calculated as:
+
+![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric1_formula.PNG)
+
 ### **6. Number of Contacts and Transmissions**
 This metric combines Metrics 1 and 5 in order to take into account both each individual's number of direct transmissions and number of contacts. 
 >>>>>>> 8a8d41667061554436d39849d4d31599ae058f3a
