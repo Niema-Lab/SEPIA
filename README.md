@@ -7,8 +7,10 @@ A framework to evaluate the accuracy of a list that prioritizes individuals with
 - ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. The user's ordering is maintained.
 
 ```
-usage: [-h] [-m METRIC] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] [-s START] [-e END]
-    -h, --help            show this help message and exit
+usage: [-h HELP] [-m METRIC] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] [-s START] [-e END]
+  
+  -h, --help            show this help message and exit
+  
   -m METRIC, --metric METRIC
                         Metric of prioritization (1-6) (default: None)
   -i INPUT, --input INPUT
@@ -59,7 +61,7 @@ pip3 install numpy
 pip3 install scipy
 pip3 install matplotlib
 ```
--___External Packages to install:___- 
+-___External Packages to install:___- Located in ```efficacy_functions.py```.
 ```
 from gzip inport open as gopen
 from sys import stderr
