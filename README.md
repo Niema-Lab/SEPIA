@@ -7,7 +7,7 @@ A framework to evaluate the accuracy of a list that prioritizes individuals with
 - ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. The user's ordering is maintained.
 
 ```
-usage: [-h HELP] [-m METRIC] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] [-s START] [-e END]
+usage: [-h] [-m METRIC] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] [-s START] [-e END]
   
   -h, --help            show this help message and exit
   
@@ -30,11 +30,14 @@ usage: [-h HELP] [-m METRIC] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CO
 - ___compute_taub.py___ - computes the Kendall Tau-b correlation coefficient between the user's ordering and the optimal ordering (which is sorted in descending order).
 
 ```
-usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
+usage: [-h] [-i INPUT] [-o OUTPUT] [-r REVERSEORDER]
+  
   -h, --help            Show the help message and exit
+  
   -i INPUT, --input INPUT
                         Input File (User ordering of individuals paired with their counts) 
                         (default: stdin)
+  
   -o OUTPUT, --output OUTPUT
                         Output File (Tau-b correlation coefficient, along with calculated p-value)
                         (default: stdout)
