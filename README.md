@@ -48,6 +48,7 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
 
 ### Installation Guide
 SEPIA was made with Python 3.6.9 on Ubuntu.
+```
 sudo apt-get update
 sudo apt-get install python3-pip
 pip3 install numpy
