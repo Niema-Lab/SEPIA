@@ -44,10 +44,13 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
 
 - __make_violinplots.py__ - creates 9 violin plot figures in ```\figs```, each with with 2 violin plots. Each figure represents an experimental condition, and each of the 2 plots represent either ProACT or HIV-TRACE.
 
-- _efficacyFunctions.py_ - defines several functions used in the scripts above.
+-__efficacyFunctions.py__- defines several functions used in the scripts above.
 
 ### Installation Guide
 SEPIA was made with Python 3.6.9 on Ubuntu.
+-__Installation:__- Clone the master git repository
+
+-__Dependencies to install:__-
 ```
 sudo apt-get update
 sudo apt-get install python3-pip
@@ -55,7 +58,7 @@ pip3 install numpy
 pip3 install scipy
 pip3 install matplotlib
 ```
-
+-__External Packages to install:__-
 =======
 
 ### **Metrics**
