@@ -45,3 +45,56 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
 - __make_violinplots.py__ - creates 9 violin plot figures in ```\figs```, each with with 2 violin plots. Each figure represents an experimental condition, and each of the 2 plots represent either ProACT or HIV-TRACE.
 
 - _efficacyFunctions.py_ - defines several functions used in the scripts above.
+
+
+### **Metrics**
+
+We will use four distinct metrics to generate optimal orderings. Each metric defines a unique way of calculating the count values of individuals, such that individuals with higher count values will have higher priority in the ordering.
+
+The six currently proposed metrics are as follows:
+
+### **1. Direct Transmissions**
+Each individual's count is calculated as the number of individuals they have directly transmitted HIV to. For example, if Person _A_ transmitted HIV to 4 people, Person _A_'s count would be 4.
+
+Let an individual transmit HIV to **_n_**. Thus, their count will be formally calculated as:
+
+![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric1_formula.PNG)
+
+The below figure illustrates Metrics 1, 3, and 4.
+
+![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric134_figure.PNG)
+
+### **2. Best Fit Graph**
+With this metric, we hope to take into account that individuals who transmit HIV to others more recently should have higher priority than individuals who transmitted HIV to others longer ago. 
+
+Each individual's count is calculated as the slope of a best-fit line. This line is plotted as the best-fit to a step graph that includes all of this individual's outgoing transmissions plotted over time on the horizontal axis. The line of best-fit for an individual starts at the time the individual first transmitted HIV to someone else. People that transmit HIV to the most individuals over a short time period from the time of their first transmission will have the steepest slopes. Therefore, we generate an ordering that puts individuals with steeper slopes closer to the front of the list. 
+
+The figure is not accurate in terms of how the line of best-fit will be drawn relative to the step graph.
+
+![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric2_figure.PNG)
+
+### **3. Indirect Transmissions**
+With this metric, we want to extend Metric 1 such that we are now analyzing an individual's greater effect on the community. 
+
+Each individual's count is calculated as the number of individuals they indirectly transmitted HIV to. More specifically, we count the number of individuals directly transmitted HIV to by this individual's partners. If Person _A_ transmitted HIV to Person _B_, Person _B_ transmitted HIV to Person _C_ and Person _D_, and Person _C_ transmitted HIV to Person _E_, Person _A_'s count would be 2, which is calculated by counting Person _C_ and Person _D_.
+
+Let an individual transmit HIV to **_n_** individuals, where each is an individual **_i_** from  1,2,...,**_n_**, and let **_n_**<sub>i</sub> be the number of individuals that individual **_i_** has transmitted. Thus, their count will be formally calculated as: 
+
+![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric3_formula.PNG)
+
+### **4. Total Transmissions** 
+With this metric, we want to merge Metric 1 and Metric 3, such that we take into account both an individual's direct and indirect transmissions. 
+
+Each individual's count is calculated as the number of individuals they directly and indirectly transmitted HIV to. More specifically, we count the number of individuals that directly transmitted HIV by this individual added to the number of individuals directly transmitted by this individual's partner's. If Person _A_ transmitted HIV to Person _B_, Person _B_ transmitted HIV to Person _C_ and Person _D_, and Person _C_ transmitted HIV to Person _E_, Person _A_'s count would be 3, which is calculated by counting Person _B_, Person C_, and Person _D_.
+
+Let an individual transmit HIV to **_n_** individuals, where each is an individual **_i_** from 1,2...**_n_**, and let **_n_**<sub>i</sub> be the number of individuals individual **_i_** has transmitted HIV to. Thus, the count will be formally calculated as:
+
+![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric4_formula.PNG)
+
+### **5. Number of Contacts**:
+With this metric, we find the number of contacts an individual has.
+
+Each individual's count for their number of contacts is found through totaling the number of contacts they have from themselves to another individual. If Person _A_ had Person _B_ and Person _C_ in their contact network, Person _A_ would have a count of 2. 
+
+### **6. Number of Contacts and Transmissions**
+This metric combines Metrics 1 and 5 in order to take into account both each individual's number of direct transmissions and number of contacts. 
