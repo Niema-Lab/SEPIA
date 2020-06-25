@@ -30,7 +30,7 @@ usage: [-h] [-m METRIC] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACT
 - ___compute_taub.py___ - computes the Kendall Tau-b correlation coefficient between the user's ordering and the optimal ordering (which is sorted in descending order).
 
 ```
-usage: [-h] [-i INPUT] [-o OUTPUT] [-r REVERSEORDER]
+usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
   
   -h, --help            Show the help message and exit
   
