@@ -48,9 +48,10 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
 
 ### Installation Guide
 SEPIA was made with Python 3.6.9 on Ubuntu.
--__Installation:__- Clone the master git repository
 
--__Dependencies to install:__-
+-___Installation:___- Clone the master git repository
+
+-___Dependencies to install:___-
 ```
 sudo apt-get update
 sudo apt-get install python3-pip
@@ -58,7 +59,15 @@ pip3 install numpy
 pip3 install scipy
 pip3 install matplotlib
 ```
--__External Packages to install:__-
+-___External Packages to install:___- 
+```
+from gzip inport open as gopen
+from sys import stderr
+import numpy as np
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+from itertools import repeat
+```
 =======
 
 ### **Metrics**
