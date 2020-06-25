@@ -1,8 +1,16 @@
 # SEPIA - SIMULATION-BASED EVALUATION OF PRIORITIZATION ALGORITHMS
 
-A framework to evaluate the accuracy of a list that prioritizes individuals with HIV from greatest to least based on their likelihood to spread HIV.
+SEPIA is a framework for comparing the accuracies of algorithms that prioritize individuals by risk of transmitting HIV (Human Immunodeficiency Virus).
 
-### Important files
+## Software Dependencies
+SEPIA is written in Python 3 and requires modules **numpy**, **scipy**, and **matplotlib**, all of which are easily installed using Python package installer **pip**.
+
+## Installation
+
+
+## Methods
+
+### Functions
 
 - ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. The user's ordering is maintained.
 
@@ -75,7 +83,7 @@ from itertools import repeat
 ```
 =======
 
-### **Metrics**
+## **Metrics**
 
 We will use four distinct metrics to generate optimal orderings. Each metric defines a unique way of calculating the count values of individuals, such that individuals with higher count values will have higher priority in the ordering.
 
@@ -130,4 +138,5 @@ Let an individual have contact with **_n_** individuals, where each is an indivi
 
 ### **6. Number of Contacts and Transmissions**
 This metric combines Metrics 1 and 5 in order to take into account both each individual's number of direct transmissions and number of contacts. 
->>>>>>> 8a8d41667061554436d39849d4d31599ae058f3a
+
+![](https://github.com/Moshiri-Lab/SEPIA/blob/master/transmission_network.JPG)
