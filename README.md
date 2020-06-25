@@ -2,11 +2,28 @@
 
 SEPIA is a framework for comparing the accuracies of algorithms that prioritize individuals by risk of transmitting HIV (Human Immunodeficiency Virus).
 
-## Software Dependencies
-SEPIA is written in Python 3 and requires modules **numpy**, **scipy**, and **matplotlib**, all of which are easily installed using Python package installer **pip**.
+## Installation Guide
+SEPIA was written in Python 3 and is intended to be used through the bash interface.
 
-## Installation
+-___Installation:___- Clone the master git repository
 
+-___Dependencies to install:___-
+```
+sudo apt-get update
+sudo apt-get install python3-pip
+pip3 install numpy
+pip3 install scipy
+pip3 install matplotlib
+```
+-___External Packages to install:___- Located in ```efficacy_functions.py```.
+```
+from gzip inport open as gopen
+from sys import stderr
+import numpy as np
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+from itertools import repeat
+```
 
 ## Methods
 
@@ -58,30 +75,6 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
 - __make_violinplots.py__ - creates 9 violin plot figures in ```\figs```, each with with 2 violin plots. Each figure represents an experimental condition, and each of the 2 plots represent either ProACT or HIV-TRACE.
 
 -__efficacyFunctions.py__- defines several functions used in the scripts above.
-
-### Installation Guide
-SEPIA was made with Python 3.6.9 on Ubuntu.
-
--___Installation:___- Clone the master git repository
-
--___Dependencies to install:___-
-```
-sudo apt-get update
-sudo apt-get install python3-pip
-pip3 install numpy
-pip3 install scipy
-pip3 install matplotlib
-```
--___External Packages to install:___- Located in ```efficacy_functions.py```.
-```
-from gzip inport open as gopen
-from sys import stderr
-import numpy as np
-import scipy.stats as stats
-import matplotlib.pyplot as plt
-from itertools import repeat
-```
-=======
 
 ## **Metrics**
 
