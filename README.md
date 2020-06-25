@@ -7,7 +7,7 @@ A framework to evaluate the accuracy of a list that prioritizes individuals with
 - ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. The user's ordering is maintained.
 
 ```
-usage: [-h] -m METRIC [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] -s START [-e END]
+usage: [-h] [-m METRIC] [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] [-s START] [-e END]
     -h, --help            show this help message and exit
   -m METRIC, --metric METRIC
                         Metric of prioritization (1-6) (default: None)
@@ -16,9 +16,9 @@ usage: [-h] -m METRIC [-i INPUT] [-o OUTPUT] [-t TRANMSISSIONHIST] [-c CONTACTNE
   -o OUTPUT, --output OUTPUT
                         Output File (default: stdout)
   -t TRANMSISSIONHIST, --tranmsissionHist TRANMSISSIONHIST
-                        Tranmission History File (default: )
+                        Tranmission History File (default: None)
   -c CONTACTNET, --contactNet CONTACTNET
-                        Contact History File (default: )
+                        Contact History File (default: None)
   -s START, --start START
                         Time Start (default: None)
   -e END, --end END     Time End (default: inf)
@@ -45,3 +45,11 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
 - __make_violinplots.py__ - creates 9 violin plot figures in ```\figs```, each with with 2 violin plots. Each figure represents an experimental condition, and each of the 2 plots represent either ProACT or HIV-TRACE.
 
 - _efficacyFunctions.py_ - defines several functions used in the scripts above.
+
+### Installation Guide
+SEPIA was made with Python 3.6.9 on Ubuntu.
+sudo apt-get update
+sudo apt-get install python3-pip
+pip3 install numpy
+pip3 install scipy
+pip3 install matplotlib
