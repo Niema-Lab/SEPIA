@@ -84,24 +84,26 @@ We will use four distinct metrics to generate optimal orderings. Each metric def
 The six currently proposed metrics are as follows:
 
 ### **1. Direct Transmissions**
-Each individual's count is calculated as the number of individuals they have directly transmitted HIV to. For example, if Person _A_ transmitted HIV to 4 people, Person _A_'s count would be 4.
-
-Let an individual transmit HIV to **_n_**. Thus, their count will be formally calculated as:
+In this metric, each individual's count is calculated as the number of individuals (**_n_**) they have directly transmitted HIV to, formally represented as: 
 
 ![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric1_formula.PNG)
 
-The below figure illustrates Metrics 1, 3, and 4.
+The below figure illustrates an example transmission network:
 
-![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric134_figure.PNG)
+![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/Slide1.JPG)
+
+In this example, Person A has four outgoing edges, indicating that Person A transmitted HIV to four people and has a direct transmission count of 4. Similarly, Person B has no outgoing edges, so Person B's count is 0.
 
 ### **2. Best Fit Graph**
-With this metric, we hope to take into account that individuals who transmit HIV to others more recently should have higher priority than individuals who transmitted HIV to others longer ago. 
+In this metric, each individual's count is calculated as the slope of a best-fit line plotted in a step graph of all of the individual's outgoing transmissions over a specified time period on the horizontal axis. The line of best-fit starts at the event of the individual first transmitting HIV to someone else; this aims to prioritize individuals that transmit HIV to more people over a short time period, as they will have steeper slopes. 
 
-Each individual's count is calculated as the slope of a best-fit line. This line is plotted as the best-fit to a step graph that includes all of this individual's outgoing transmissions plotted over time on the horizontal axis. The line of best-fit for an individual starts at the time the individual first transmitted HIV to someone else. People that transmit HIV to the most individuals over a short time period from the time of their first transmission will have the steepest slopes. Therefore, we generate an ordering that puts individuals with steeper slopes closer to the front of the list. 
+With this metric, we hope to take into account that individuals who transmit HIV to others more recently should have higher priority than individuals who transmitted HIV to others longer ago.  
 
-The figure is not accurate in terms of how the line of best-fit will be drawn relative to the step graph.
+The following figure shows the resulting lines of best-fit for two cases: 
 
-![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric2_figure.PNG)
+![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/Slide3.JPG)
+
+The graph on the left represents a case in which the individual started transmitting HIV more recently, whereas the graph on the right represents a case in which the individual had multiple outgoing transmissions early in the time period but stopped towards the middle. This design thus gives higher priority to the individual represented by the left side with multiple recent outgoing transmissions, as their slope is greater.
 
 ### **3. Indirect Transmissions**
 With this metric, we want to extend Metric 1 such that we are now analyzing an individual's greater effect on the community. 
@@ -133,4 +135,3 @@ Let an individual have contact with **_n_** individuals, where each is an indivi
 ### **6. Number of Contacts and Transmissions**
 This metric combines Metrics 1 and 5 in order to take into account both each individual's number of direct transmissions and number of contacts. 
 
-![](https://github.com/Moshiri-Lab/SEPIA/blob/master/transmission_network.JPG)
