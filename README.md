@@ -87,11 +87,9 @@ The six currently proposed metrics are as follows:
 In this metric, each individual's count is calculated as the number of individuals (**_n_**) they have directly transmitted HIV to, formally represented as: 
 
 ![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric1_formula.PNG)
-
 The below figure illustrates an example transmission network:
 
 ![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/Slide1.JPG)
-
 In this example, Person A has four outgoing edges, indicating that Person A transmitted HIV to four people and has a direct transmission count of 4. Similarly, Person B has no outgoing edges, so Person B's count is 0.
 
 ### **2. Best Fit Graph**
@@ -102,7 +100,6 @@ With this metric, we hope to take into account that individuals who transmit HIV
 The following figure shows the resulting lines of best-fit for two cases: 
 
 ![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/Slide3.JPG)
-
 The graph on the left represents a case in which the individual started transmitting HIV more recently, whereas the graph on the right represents a case in which the individual had multiple outgoing transmissions early in the time period but stopped towards the middle. This design thus gives higher priority to the individual represented by the left side with multiple recent outgoing transmissions, as their slope is greater.
 
 ### **3. Indirect Transmissions**
