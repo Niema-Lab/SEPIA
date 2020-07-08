@@ -79,18 +79,15 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
 
 ## **Metrics**
 
-We will use four distinct metrics to generate optimal orderings. Each metric defines a unique way of calculating the count values of individuals, such that individuals with higher count values will have higher priority in the ordering.
-
-The six currently proposed metrics are as follows:
+We have implemented six distinct metrics to generate optimal orderings, with each defining a unique way of calculating the coutn values of individuals such that individuals with higher counts will have higher priority in the ordering.
 
 ### **1. Direct Transmissions**
-In this metric, each individual's count is calculated as the number of individuals (**_n_**) they have directly transmitted HIV to, formally represented as: 
+In this metric, each individual's count is calculated as the number of individuals that they have directly (one edge away) transmitted HIV to.
 
-![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric1_formula.PNG)
+The below figure illustrates an example transmission network, with arrows indicating a transmission from one person (node) to another:
 
-The below figure illustrates an example transmission network:
+<img src = "assets/images/transmission_network.JPG" width="800">
 
-![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/transmission network.JPG)
 In this example, Person A has four outgoing edges, indicating that Person A transmitted HIV to four people and has a direct transmission count of 4. Similarly, Person B has no outgoing edges, so Person B's count is 0.
 
 ### **2. Best Fit Graph**
@@ -101,35 +98,41 @@ With this metric, we hope to take into account that individuals who transmit HIV
 The following figure shows the resulting lines of best-fit for two cases: 
 
 ![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/stepGraph.JPG)
+
 The graph on the left represents a case in which the individual started transmitting HIV more recently, whereas the graph on the right represents a case in which the individual had multiple outgoing transmissions early in the time period but stopped towards the middle. This design thus gives higher priority to the individual represented by the left side with multiple recent outgoing transmissions, as their slope is greater.
 
 ### **3. Indirect Transmissions**
-With this metric, we want to extend Metric 1 such that we are now analyzing an individual's greater effect on the community. 
+This metric extends Metric 1 in order to analyze an individual's greater impact on the community. 
 
-Each individual's count is calculated as the number of individuals they indirectly transmitted HIV to. More specifically, we count the number of individuals directly transmitted HIV to by this individual's partners. If Person _A_ transmitted HIV to Person _B_, Person _B_ transmitted HIV to Person _C_ and Person _D_, and Person _C_ transmitted HIV to Person _E_, Person _A_'s count would be 2, which is calculated by counting Person _C_ and Person _D_.
+Each individual's count is calculated as the cumulative number of individuals they indirectly (more than 1 edge away) transmitted HIV to for up to any given number of degrees away. 
 
-Let an individual transmit HIV to **_n_** individuals, where each is an individual **_i_** from  1,2,...,**_n_**, and let **_n_**<sub>i</sub> be the number of individuals that individual **_i_** has transmitted. Thus, their count will be formally calculated as: 
+<img src = "assets/images/transmission_network.JPG" width="800">
 
-![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric3_formula.PNG)
+For instance, in the example transmission network shown above, Person A (highlighted in red) directly transmitted HIV to Persons B, C, D, and E (highlighted in yellow), who then transmitted HIV to Persons F, G, H, and I (highlighted in blue), who then transmitted HIV to Persons J, K, L, M, N, and O (highlighted in green). Thus, given the number of degrees away = 2 (2 edges away in the figure), Person A's indirect transmission are F, G, H, and I, which sums to a count of 4. Similarly, given the number of degrees away = 3, Person A's indirect transmissions are F, G, H, I, J, K, L, M, N, and O, for a count of 10. 
 
 ### **4. Total Transmissions** 
-With this metric, we want to merge Metric 1 and Metric 3, such that we take into account both an individual's direct and indirect transmissions. 
+This metric merges Metrics 1 and 3 to take into account each individual's direct and indirect transmissions. 
 
-Each individual's count is calculated as the number of individuals they directly and indirectly transmitted HIV to. More specifically, we count the number of individuals that directly transmitted HIV by this individual added to the number of individuals directly transmitted by this individual's partner's. If Person _A_ transmitted HIV to Person _B_, Person _B_ transmitted HIV to Person _C_ and Person _D_, and Person _C_ transmitted HIV to Person _E_, Person _A_'s count would be 3, which is calculated by counting Person _B_, Person C_, and Person _D_.
+Each individual's count is calculated as the cumulative number of individuals that they have directly (1 edge away) and indirectly (2+ edges away) transmitted HIV to for up to any given number of degrees away.
 
-Let an individual transmit HIV to **_n_** individuals, where each is an individual **_i_** from 1,2...**_n_**, and let **_n_**<sub>i</sub> be the number of individuals individual **_i_** has transmitted HIV to. Thus, the count will be formally calculated as:
+<img src = "assets/images/transmission_network.JPG" width="800">
 
-![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric4_formula.PNG)
+In this example, at 2 degrees away, Person A (highlighted in red) has 4 direct transmissions (to Persons B, C, D, and E) and 4 indirect transmissions (to Persons F, G, H, and I) for a total count of 8. Similarly, at 3 degrees away, Person A has 4 direct transmissions and 10 indirect transmissions (Persons F, G, H, I, J, K, L, M, N, O) for a total count of 14.
 
 ### **5. Number of Contacts**:
-With this metric, we find the number of contacts an individual has.
+This metric measures an individual's priority based on their number of contacts, with an edge in a contact network existing between any two individuals who have a relationship through which HIV may be transmitted.
 
-Each individual's count for their number of contacts is found through totaling the number of contacts they have from themselves to another individual. If Person _A_ had Person _B_ and Person _C_ in their contact network, Person _A_ would have a count of 2. 
+The figure below illustrates an example contact network corresponding to the transmission network in previous examples:
 
-Let an individual have contact with **_n_** individuals, where each is an individual **_i_** from 1,2...**_n_**. Thus, the count will be formally calculated as:
+<img src = "assets/images/contact_network.JPG" width="800">
 
-![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/metric1_formula.PNG)
+In this example, Person A has undirected edges between themself and Persons B, C, D, and E, so Person A has a count of 4. Similarly, Person B has indirected edges between themself and Persons A, R, and S, so Person B has a count of 3.
 
 ### **6. Number of Contacts and Transmissions**
-This metric combines Metrics 1 and 5 in order to take into account both each individual's number of direct transmissions and number of contacts. 
+This metric combines Metrics 1 and 5 in order to take into account each individual's number of direct transmissions and number of contacts. 
 
+Below are the transmission (left) and contact (right) networks:
+
+<img src = "assets/images/transmission_network.JPG" width="450"><img src = "assets/images/contact_network.JPG" width="450">
+
+In this example, Person D has direct transmissions to Persons G and H, and is in contact with Persons A, G, H, and P, so Person D has a total count of 6. 
