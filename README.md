@@ -97,7 +97,7 @@ With this metric, we hope to take into account that individuals who transmit HIV
 
 The following figure shows the resulting lines of best-fit for two cases: 
 
-![](https://github.com/ERSP-HIV-Phylogenetics-and-Transmission/SEPIA/blob/master/assets/images/stepGraph.JPG)
+<img src = "assets/images/Metric2.jpg" width="800">
 
 The graph on the left represents a case in which the individual started transmitting HIV more recently, whereas the graph on the right represents a case in which the individual had multiple outgoing transmissions early in the time period but stopped towards the middle. This design thus gives higher priority to the individual represented by the left side with multiple recent outgoing transmissions, as their slope is greater.
 
