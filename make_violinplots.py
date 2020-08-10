@@ -40,6 +40,7 @@ algorithmNames = { PROACTFMT : "ProACT", HIVTRACEFMT : "HIV TRACE" }
 colors = { "ProACT" : '#000080', "HIV TRACE" : '#ffb500'}
 FONT = "Georgia"
 
+"""
 x_labels = {
 'SAMPLE-FIRSTART_ARTRATE-1': r' $3$',
 'SAMPLE-FIRSTART_ARTRATE-2': r' $2$',
@@ -54,8 +55,8 @@ x_labels = {
 'SAMPLE-END_ARTRATE-2': r' $E_{d}=10$, $\lambda_{+}=2$, $\lambda_{-}=1x$ (End)',
 'SAMPLE-END_ARTRATE-4': r' $E_{d}=10$, $\lambda_{+}=4$, $\lambda_{-}=1x$ (End)',
 }
-
 """
+
 x_labels = {
 'SAMPLE-FIRSTART_ARTRATE-1': r' $E_{d}=10$, $\lambda_{+}=1$, $\lambda_{-}=1x$',
 'SAMPLE-FIRSTART_ARTRATE-2': r' $E_{d}=10$, $\lambda_{+}=2$, $\lambda_{-}=1x$',
@@ -70,7 +71,7 @@ x_labels = {
 'SAMPLE-END_ARTRATE-2': r' $E_{d}=10$, $\lambda_{+}=2$, $\lambda_{-}=1x$ (End)',
 'SAMPLE-END_ARTRATE-4': r' $E_{d}=10$, $\lambda_{+}=4$, $\lambda_{-}=1x$ (End)',
 }
-"""
+
 
 
 def calculateTauSimulation(transmissionFile: str, contactNetFile: str, experiment: str, intStr: str, algm: str) -> float:
@@ -158,11 +159,13 @@ for experiment in EXPERIMENTS:
 ax = violinplot(x="Experiment", y="Tau", hue="Algorithm", data=df, dodge=False, palette=colors)
 
 # Format graph
-#ax.set_xticklabels(ax.get_xticklabels(), horizontalalignment='right')
-ax.set_xticklabels(ax.get_xticklabels())
-plt.xticks(rotation=0)
+ax.set_xticklabels(ax.get_xticklabels(), horizontalalignment='right')
+#ax.set_xticklabels(ax.get_xticklabels())
+#plt.xticks(rotation=0)
+plt.xticks(rotation=90)
 ax.set_ylabel("Kendall's Tau-b", fontname=FONT, fontsize=13)
-ax.set_xlabel("Simulation Number", fontname=FONT, fontsize=13)
+ax.set_xlabel("Experimental Condition", fontname=FONT, fontsize=13)
+#ax.set_xlabel("Simulation Number", fontname=FONT, fontsize=13)
 plt.legend(prop={'family':FONT, 'size':12})
 bottom, top = plt.ylim()
 plt.ylim(top=(top + 0.022))  # adjust the top leaving bottom unchanged
