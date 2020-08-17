@@ -139,11 +139,11 @@ for experiment in EXPERIMENTS:
 		y = [] # Tau-b values
 
 		# Iterate over all 20 simulations per experiment
-		for i in range(1,21):
+		for i in range(1,11):
 
 			# Convert i into a str for the file names
 			intStr = ''
-			if i < 9:
+			if i < 10:
 				intStr = "sd." + str(i) + "0"
 			else:
 				intStr = "sd.full"
