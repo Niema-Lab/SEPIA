@@ -19,7 +19,6 @@ import scipy.stats as stats
 START_TIME = 9
 METRIC_CHOICE = sys.argv[1] # Keyboard input for metric
 
-# EXPERIMENTS = ['SAMPLE-FIRSTART_ARTRATE-4']
 EXPERIMENTS = ['SAMPLE-FIRSTART_ARTRATE-4','SAMPLE-FIRSTART_ARTRATE-2','SAMPLE-FIRSTART_ARTRATE-1',
 'SAMPLE-FIRSTART_STOPRATE-0.25x','SAMPLE-FIRSTART_STOPRATE-0.5x','SAMPLE-FIRSTART_STOPRATE-2x',
 'SAMPLE-FIRSTART_STOPRATE-4x','SAMPLE-FIRSTART_EXPDEGREE-20','SAMPLE-FIRSTART_EXPDEGREE-30']
@@ -29,15 +28,35 @@ SIMS_DIR = 'simulations/'
 FIGURES_DIR = 'figs/'
 # File names/formatting
 TRANSMISSIONFMT = ".transmissions.txt.gz"
+CONTACTNETFMT = '.contacts.txt.gz'
 PROACTFMT = ".time9.ft.mv.proact.txt.gz"
 HIVTRACEFMT = ".time9.tn93.hivtrace.growth.ordering.txt.gz"
 INTERMEDIATEFILE = "intermediate_file_violinplot.txt" # file where output of compute efficacy is saved
 algorithms = [PROACTFMT, HIVTRACEFMT]
 
 # Strings/colors for formatting graphs
-algorithmNames = { PROACTFMT : "ProACT", HIVTRACEFMT : "Cluster Growth" }
-colors = { "ProACT" : '#161f54', "Cluster Growth" : '#a16c18'}
+algorithmNames = { PROACTFMT : "ProACT", HIVTRACEFMT : "HIV TRACE" }
+colors = { "ProACT" : '#000080', "HIV TRACE" : '#ffb500'}
 FONT = "Georgia"
+
+
+"""
+x_labels = {
+'SAMPLE-FIRSTART_ARTRATE-1': r' $3$',
+'SAMPLE-FIRSTART_ARTRATE-2': r' $2$',
+'SAMPLE-FIRSTART_ARTRATE-4': r' $1$',
+'SAMPLE-FIRSTART_STOPRATE-0.25x': r' $4$',
+'SAMPLE-FIRSTART_STOPRATE-0.5x': r' $5$',
+'SAMPLE-FIRSTART_STOPRATE-2x': r' $6$',
+'SAMPLE-FIRSTART_STOPRATE-4x': r' $7$',
+'SAMPLE-FIRSTART_EXPDEGREE-20': r' $8$',
+'SAMPLE-FIRSTART_EXPDEGREE-30': r' $9$',
+'SAMPLE-END_ARTRATE-1': r' $E_{d}=10$, $\lambda_{+}=1$, $\lambda_{-}=1x$ (End)',
+'SAMPLE-END_ARTRATE-2': r' $E_{d}=10$, $\lambda_{+}=2$, $\lambda_{-}=1x$ (End)',
+'SAMPLE-END_ARTRATE-4': r' $E_{d}=10$, $\lambda_{+}=4$, $\lambda_{-}=1x$ (End)',
+}
+"""
+
 x_labels = {
 'SAMPLE-FIRSTART_ARTRATE-1': r' $E_{d}=10$, $\lambda_{+}=1$, $\lambda_{-}=1x$',
 'SAMPLE-FIRSTART_ARTRATE-2': r' $E_{d}=10$, $\lambda_{+}=2$, $\lambda_{-}=1x$',
@@ -54,7 +73,8 @@ x_labels = {
 }
 
 
-def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, algm: str) -> float:
+
+def calculateTauSimulation(transmissionFile: str, contactNetFile: str, experiment: str, intStr: str, algm: str) -> float:
 	"""
 	Helper method for calculating the Tau value for a certain simulation.
 
@@ -71,7 +91,9 @@ def calculateTauSimulation(transmissionFile: str, experiment: str, intStr: str, 
 	outputFile = open(INTERMEDIATEFILE, 'w')
 
 	# Run compute_efficacy with inputFile and outputFile
-	bashCommand = "py compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
+
+	#bashCommand = "python3 compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME)
+	bashCommand = "python3 compute_efficacy.py -m " + str(METRIC_CHOICE) + " -i " + inputFile + " -t " + transmissionFile + " -s " + str(START_TIME) + " -c" + contactNetFile
 	subprocess.call(bashCommand.split(), stdout=outputFile)
 	outputFile.close()
 
@@ -118,10 +140,12 @@ for experiment in EXPERIMENTS:
 			else:
 				intStr = str(i)
 
-			transmissionFile = SIMS_DIR +  experiment + "/" + intStr + TRANSMISSIONFMT
+			fileFormatStr = SIMS_DIR + experiment + "/" + intStr
+			transmissionFile = fileFormatStr + TRANSMISSIONFMT
+			contactNetFile = fileFormatStr + CONTACTNETFMT
 
 			# Calculate tau for this simulation w/ ProACT
-			tau = calculateTauSimulation(transmissionFile, experiment, intStr, a)
+			tau = calculateTauSimulation(transmissionFile, contactNetFile, experiment, intStr, a)
 
 			temp = pd.DataFrame([[x_labels[experiment], tau, algorithmNames[a]]], columns= cols)
 			df = df.append(temp)
@@ -136,9 +160,12 @@ ax = violinplot(x="Experiment", y="Tau", hue="Algorithm", data=df, dodge=False, 
 
 # Format graph
 ax.set_xticklabels(ax.get_xticklabels(), horizontalalignment='right')
+#ax.set_xticklabels(ax.get_xticklabels())
+#plt.xticks(rotation=0)
 plt.xticks(rotation=90)
 ax.set_ylabel("Kendall's Tau-b", fontname=FONT, fontsize=13)
 ax.set_xlabel("Experimental Condition", fontname=FONT, fontsize=13)
+#ax.set_xlabel("Simulation Number", fontname=FONT, fontsize=13)
 plt.legend(prop={'family':FONT, 'size':12})
 bottom, top = plt.ylim()
 plt.ylim(top=(top + 0.022))  # adjust the top leaving bottom unchanged

@@ -40,7 +40,6 @@ def calculateTauB(userOrder, outfile, reverse: bool) -> None:
         outfile.write("%s\t%s\n" % (tau, pvalue))
 
 
-
 # parse user arguments [-h] [-i INPUT] [-o OUTPUT] [-r]
 import argparse
 parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
