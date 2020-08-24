@@ -11,9 +11,10 @@ import scipy.stats as stats
 import matplotlib.pyplot as plt
 from itertools import repeat
 
+
 # CONSTANTS
 DEF_POINTS_PER_STEP = 10
-METRIC1 = 1; METRIC2 = 2; METRIC3 = 3; METRIC4 = 4; METRIC5 = 5; METRIC6 = 6;
+METRIC1 = 1; METRIC2 = 2; METRIC3 = 3; METRIC4 = 4; METRIC5 = 5; METRIC6 = 6
 TAB_CHAR = '\t'
 
 
@@ -159,7 +160,6 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
         if numPointsPerStep == 0:
             numPointsPerStep = DEF_POINTS_PER_STEP
 
-
         infectedPersons= []; people = []
         # build timesInfected, a dict where each person is
         # matched up with a list of times at which they transmitted
@@ -196,14 +196,18 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
             if not isUpperBoundSet and float(t) > latestInfectionTime:
                 latestInfectionTime = float(t)
 
+
         # Build a dict with users as keys paired with their slopes
         slopesDict = dict()
+
+        count = 0
 
         # Loop over all transmitters
         for u in timesInfected:
             # Build two lists, one with xCoordinates and
             # one with yCoordinates, for linear regression
-            x = np.empty(1); y = np.empty(1)
+            x = [0]
+            y = [0]
 
             # Gets times of transmissions for transmitter u
             times = timesInfected[u]
@@ -233,14 +237,47 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
                 # plot the ycoords of this step
                 y = np.append(y, list(repeat(i + 1, numPointsPerStep)))
 
-            linregress = stats.linregress(x, y)
+
+            # for i in x:
+            #     if isinstance(i, float) or isinstance(i, int):
+            #         pass
+            #     elif isNaN(i):
+            #         raise ValueError("Not a float, in x", i)
+            #         break   
+            #     else:
+            #         raise ValueError("Not a float, in x", i)
+            #         break
+
+            # for i in y:
+            #     if isinstance(i, float) or isinstance(i, int):
+            #         pass
+            #     elif isNaN(i):
+            #         raise ValueError("Not a float, in y", i)
+            #         break                    
+            #     else:
+            #         raise ValueError("Not a float, in y", i)
+            #         break
+
+            # if count == 426:
+            #     print(x)
+            #     print(y)
+
+            #print("before lingress" + str(count))
+
+            linregress = stats.linregress(x[1:], y[1:])
             slopesDict[u] = linregress.slope
+
+            #print("after lingress" + str(count))
+
+            count += 1
+
 
             # TESTING - Plot the points and the best fit
             # if (u == 'CNG0-COM3-502'):
-            #     plt.plot(x, y, 'o')
-            #     plt.plot(x, float(linregress.intercept) + linregress.slope*x, 'r')
-            #     plt.show()
+            # plt.plot(x, y, 'o')
+            # plt.plot(x, float(linregress.intercept) + linregress.slope*x, 'r')
+            # plt.show()
+
 
         return slopesDict
 
