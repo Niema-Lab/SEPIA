@@ -1,6 +1,9 @@
 # Ignore simulations folder
 simulations/
 
+# Ignore intermediate_file_violinplot.txt (file created when running make_violinplots)
+intermediate_file_violinplot.txt
+
 # Ignore DS_STORE
 .DS_STORE
 
