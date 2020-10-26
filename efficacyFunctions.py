@@ -547,12 +547,10 @@ def numContactInfect(transmissionHist, contactNet, lowerBound: int, upperBound: 
 
 # HELPER METHODS  -----------------------------------------------------------------------------------------------------
 
-def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) -> None:
+def matchInfectorCounts(infectionsDict: dict, inputOrder) -> None:
         """
         Matches the infectors in a user inputted file to their corresponding
-        infection count. Returns void.
-
-        Outputs lines with the format: "<individual> <count>",
+        infection count. Returns a list of tuples (<indvidiual>, <count>), 
         maintaing the original order of individuals in input.
 
         Parameters
@@ -560,24 +558,23 @@ def matchInfectorCounts(infectionsDict: dict, inputOrder, outfile, metric: int) 
         infectionsDict - a dict with keys as infectors and values as
                                          their infection counts
         inputOrder - the user's ordering of individuals
-        outfile - a file where each line of output is written
-        metric - int, a file denoting which metric was performed
         """
 
+        res = []
+        
         for line in inputOrder:
 
                 p = line.strip()
 
                 if p in infectionsDict.keys():
 
-                    if metric == METRIC2:
-                        outfile.write("%s\t%f\n" % (p, infectionsDict[p]))
-                    else:
-                        outfile.write("%s\t%d\n" % (p, infectionsDict[p]))
+                    res.append((p, infectionsDict[p]))
 
                 else:
                     # individual not in the dictionary, just print them with 0 infections
-                    outfile.write("%s\t0\n" % (p))
+                    res.append((p, 0))
+
+        return res
 
 
 def opengzip(transmissionHist: str) -> list:
