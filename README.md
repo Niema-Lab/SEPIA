@@ -73,12 +73,6 @@ usage: [-h] [-i INPUT] [-o OUTPUT] [-r]
                         ascending order).
 ```
 
-- __make_violinplots.py__ - creates 9 violin plot figures in ```\figs```, each with with 2 violin plots. Each figure represents an experimental condition, and each of the 2 plots represent either ProACT or HIV-TRACE.
-
-```
-usage: [METRIC]
- METRIC			The metric you want to generate violin plots for with the data
-```
 -__efficacyFunctions.py__- defines several functions used in the scripts above.
 
 ## **Metrics**
