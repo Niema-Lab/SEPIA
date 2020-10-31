@@ -19,7 +19,7 @@ import scipy.stats as stats
 
 # Parameters of choice
 START_TIME = 9
-METRIC_CHOICE = sys.argv[1] # Keyboard input for metric
+METRIC_CHOICE = int(sys.argv[1]) # Keyboard input for metric
 
 EXPERIMENTS = ['SAMPLE-FIRSTART_ARTRATE-4','SAMPLE-FIRSTART_ARTRATE-2','SAMPLE-FIRSTART_ARTRATE-1',
 'SAMPLE-FIRSTART_STOPRATE-0.25x','SAMPLE-FIRSTART_STOPRATE-0.5x','SAMPLE-FIRSTART_STOPRATE-2x',
@@ -97,7 +97,7 @@ def calculateTauSimulation(transmissionFile: str, contactNetFile: str, experimen
 	# parse user arguments  [-h] -m METRIC [-i INPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] -s START [-e END] [-v]
 	bashCommand = ""
 	if METRIC_CHOICE == 5:
-		bashCommand = ["python SEPIA.py -m ", str(METRIC_CHOICE), " -i ", inputFile, " -t ", transmissionFile, " -s ", str(START_TIME), " -c", contactNetFile]
+		bashCommand = ["python SEPIA.py -m ", str(METRIC_CHOICE), " -i ", inputFile, " -t ", transmissionFile, " -s ", str(START_TIME), " -c ", contactNetFile]
 	else:
 		bashCommand = ["python SEPIA.py -m ", str(METRIC_CHOICE), " -i ", inputFile, " -t ", transmissionFile, " -s ", str(START_TIME)]
 
