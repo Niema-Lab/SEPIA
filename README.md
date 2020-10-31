@@ -30,7 +30,7 @@ from itertools import repeat
 
 ### Functions
 
-- ___compute_efficacy.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. Then, 
+- ___SEPIA.py___ - matches all individuals in the user's ordering along with the number of people each individual infected during a specified period of time. Then, 
 computes the Kendall Tau-b correlation coefficient between the user's ordering and the optimal ordering.
 ```
 usage: SEPIA.py [-h] -m METRIC [-i INPUT] [-t TRANMSISSIONHIST]
