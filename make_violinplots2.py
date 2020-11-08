@@ -96,7 +96,7 @@ def calculateTauSimulation(transmissionFile: str, contactNetFile: str, experimen
 
 	# parse user arguments  [-h] -m METRIC [-i INPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] -s START [-e END] [-v]
 	bashCommand = ""
-	if METRIC_CHOICE == 5:
+	if METRIC_CHOICE == 5 or METRIC_CHOICE == 6:
 		bashCommand = ["python SEPIA.py -m ", str(METRIC_CHOICE), " -i ", inputFile, " -t ", transmissionFile, " -s ", str(START_TIME), " -c ", contactNetFile]
 	else:
 		bashCommand = ["python SEPIA.py -m ", str(METRIC_CHOICE), " -i ", inputFile, " -t ", transmissionFile, " -s ", str(START_TIME)]

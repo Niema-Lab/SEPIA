@@ -1,6 +1,7 @@
 # Ignore simulations and paper assets 
 simulations/
 make_violinplots.py
+make_violinplots2.py
 figs/
 
 # Ignore intermediate_file_violinplot.txt (file created when running make_violinplots)
