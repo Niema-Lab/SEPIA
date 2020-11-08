@@ -41,7 +41,7 @@ def calculateTauB(userOrder) -> None:
 parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-m', '--metric', required=True, type=float, help="Metric of prioritization (1-6)")
 parser.add_argument('-i', '--input', required=False, type=str, default='stdin', help="Input File - User's Ordering")
-parser.add_argument('-t', '--tranmsissionHist', required=False, type=str, default='', help='Tranmission History File')
+parser.add_argument('-t', '--transmissionHist', required=False, type=str, default='', help='Transmission History File')
 parser.add_argument('-c', '--contactNet', required=False, type=str, default='',  help='Contact History File')
 parser.add_argument('-s', '--start', required=True, type=float, help='Time Start')
 parser.add_argument('-e', '--end', required=False, type=float, default=float('inf'), help='Time End') # end defaults to infinity
@@ -58,7 +58,7 @@ else:
 
 
 # Create a dictionary matching individuals to infection counts using tranmission history data
-infectionsDict = pairCounts(args.tranmsissionHist, args.contactNet, args.start, args.end, args.metric)
+infectionsDict = pairCounts(args.transmissionHist, args.contactNet, args.start, args.end, args.metric)
 
 # Read the user's ordering and create a list of tuple pairs with individuals and their respective counts in the same order
 countsList = matchInfectorCounts(infectionsDict, order)
