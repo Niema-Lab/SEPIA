@@ -6,6 +6,7 @@ SEPIA is a framework for comparing the accuracies of algorithms that prioritize 
 1. [Software Dependencies](#software-dependencies)
 2. [Installation Guide](#installation-guide)
 3. [Methods](#methods)
+4. [Example Execution](https://github.com/Moshiri-Lab/SEPIA/wiki/Example-Execution)
 
 ## Software Dependencies
 SEPIA is written in Python 3 and requires the following dependencies: 
@@ -119,3 +120,5 @@ In this example, Person A has undirected edges between themself and Persons B, C
 This metric combines Metrics 1 and 5 in order to take into account each individual's number of direct transmissions and number of contacts. 
 
 In the example transmission and contact networks from (1) and (5), Person D has direct transmissions to Persons G and H, and is in contact with Persons A, G, H, and P, so Person D has a total count of 6. 
+
+
