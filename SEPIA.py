@@ -10,7 +10,7 @@ If verbose flag is specified, intermediate data in the process can be outputted 
 # imports
 from gzip import open as gopen
 from itertools import repeat
-from numpy import linspace
+from numpy import append, linspace
 from scipy.stats import kendalltau, linregress
 from sys import stderr, stdin
 import argparse
@@ -205,8 +205,8 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
 
             # Plot up to the first transmission time, step 0
             step = linspace(lowerBound, times[0], numPointsPerStep, endpoint=True)
-            x = np.append(x, step)
-            y = np.append(y, list(repeat(0, numPointsPerStep)))
+            x = append(x, step)
+            y = append(y, list(repeat(0, numPointsPerStep)))
 
             # Loop over all the transmission times of u
             for i in range(len(times)):
@@ -217,16 +217,16 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
                 if (i == len(times) - 1):
                     step = linspace(times[i], latestInfectionTime,
                                        numPointsPerStep, endpoint=True)
-                    x = np.append(x, step)
-                    y = np.append(y, list(repeat(i + 1, numPointsPerStep)))
+                    x = append(x, step)
+                    y = append(y, list(repeat(i + 1, numPointsPerStep)))
                     break
 
                 # plot the xcoords of this step
                 step = linspace(times[i], times[i+1], numPointsPerStep, endpoint=True)
-                x = np.append(x, step)
+                x = append(x, step)
 
                 # plot the ycoords of this step
-                y = np.append(y, list(repeat(i + 1, numPointsPerStep)))
+                y = append(y, list(repeat(i + 1, numPointsPerStep)))
 
             lr = linregress(x[1:], y[1:])
             slopesDict[u] = lr.slope
