@@ -36,38 +36,38 @@ def calculateTauB(userOrder) -> None:
 
         print("%s\t%s\n" % (tau, pvalue))
 
+if __name__ == "__main__":
+        # parse user arguments  [-h] -m METRIC [-i INPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] -s START [-e END] [-v]
+        parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        parser.add_argument('-m', '--metric', required=True, type=float, help="Metric of prioritization (1-6)")
+        parser.add_argument('-i', '--input', required=False, type=str, default='stdin', help="Input File - User's Ordering")
+        parser.add_argument('-t', '--transmissionHist', required=False, type=str, default='', help='Transmission History File')
+        parser.add_argument('-c', '--contactNet', required=False, type=str, default='',  help='Contact History File')
+        parser.add_argument('-s', '--start', required=True, type=float, help='Time Start')
+        parser.add_argument('-e', '--end', required=False, type=float, default=float('inf'), help='Time End') # end defaults to infinity
+        parser.add_argument('-v', '--verbose', required=False, action='store_true', help='Print Intermediate List with Individuals Matched to Counts')
+        args = parser.parse_args()
 
-# parse user arguments  [-h] -m METRIC [-i INPUT] [-t TRANMSISSIONHIST] [-c CONTACTNET] -s START [-e END] [-v]
-parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('-m', '--metric', required=True, type=float, help="Metric of prioritization (1-6)")
-parser.add_argument('-i', '--input', required=False, type=str, default='stdin', help="Input File - User's Ordering")
-parser.add_argument('-t', '--transmissionHist', required=False, type=str, default='', help='Transmission History File')
-parser.add_argument('-c', '--contactNet', required=False, type=str, default='',  help='Contact History File')
-parser.add_argument('-s', '--start', required=True, type=float, help='Time Start')
-parser.add_argument('-e', '--end', required=False, type=float, default=float('inf'), help='Time End') # end defaults to infinity
-parser.add_argument('-v', '--verbose', required=False, action='store_true', help='Print Intermediate List with Individuals Matched to Counts')
-args = parser.parse_args()
-
-# handle input, save into infile var
-if args.input == 'stdin':
-    from sys import stdin; order = [l.strip() for l in stdin]
-elif args.input.lower().endswith('.gz'):
-    from gzip import open as gopen; order = [l.strip() for l in gopen(args.input).read().decode().strip().splitlines()]
-else:
-    order = [l.strip() for l in open(args.input).read().strip().splitlines()]
+        # handle input, save into infile var
+        if args.input == 'stdin':
+            from sys import stdin; order = [l.strip() for l in stdin]
+        elif args.input.lower().endswith('.gz'):
+            from gzip import open as gopen; order = [l.strip() for l in gopen(args.input).read().decode().strip().splitlines()]
+        else:
+            order = [l.strip() for l in open(args.input).read().strip().splitlines()]
 
 
-# Create a dictionary matching individuals to infection counts using tranmission history data
-infectionsDict = pairCounts(args.transmissionHist, args.contactNet, args.start, args.end, args.metric)
+        # Create a dictionary matching individuals to infection counts using tranmission history data
+        infectionsDict = pairCounts(args.transmissionHist, args.contactNet, args.start, args.end, args.metric)
 
-# Read the user's ordering and create a list of tuple pairs with individuals and their respective counts in the same order
-countsList = matchInfectorCounts(infectionsDict, order)
+        # Read the user's ordering and create a list of tuple pairs with individuals and their respective counts in the same order
+        countsList = matchInfectorCounts(infectionsDict, order)
 
-# output verbose to sdterr if verbose flag was specified
-if args.verbose:
-    print(countsList, stderr)
+        # output verbose to sdterr if verbose flag was specified
+        if args.verbose:
+            print(countsList, stderr)
 
-# calculate and output Tau B to stdout
-calculateTauB([x[1] for x in countsList])
+        # calculate and output Tau B to stdout
+        calculateTauB([x[1] for x in countsList])
 
 
