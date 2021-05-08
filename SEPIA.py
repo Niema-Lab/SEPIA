@@ -204,7 +204,7 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
             times = timesInfected[u]
 
             # Plot up to the first transmission time, step 0
-            step = np.linspace(lowerBound, times[0], numPointsPerStep, endpoint=True)
+            step = linspace(lowerBound, times[0], numPointsPerStep, endpoint=True)
             x = np.append(x, step)
             y = np.append(y, list(repeat(0, numPointsPerStep)))
 
@@ -215,14 +215,14 @@ def bestfitGraph(transmissionHist, lowerBound: int, upperBound: int, numPointsPe
                 # only plot the start point and then up to the latest time of
                 # infection globally OR plot up to upperBound if its set
                 if (i == len(times) - 1):
-                    step = np.linspace(times[i], latestInfectionTime,
+                    step = linspace(times[i], latestInfectionTime,
                                        numPointsPerStep, endpoint=True)
                     x = np.append(x, step)
                     y = np.append(y, list(repeat(i + 1, numPointsPerStep)))
                     break
 
                 # plot the xcoords of this step
-                step = np.linspace(times[i], times[i+1], numPointsPerStep, endpoint=True)
+                step = linspace(times[i], times[i+1], numPointsPerStep, endpoint=True)
                 x = np.append(x, step)
 
                 # plot the ycoords of this step
