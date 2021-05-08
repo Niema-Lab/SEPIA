@@ -10,6 +10,7 @@ If verbose flag is specified, intermediate data in the process can be outputted 
 # imports
 from gzip import open as gopen
 from itertools import repeat
+from numpy import linspace
 from scipy.stats import kendalltau, linregress
 from sys import stderr, stdin
 import argparse
